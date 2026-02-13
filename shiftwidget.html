@@ -1,4 +1,4 @@
-<div class="plant-dashboard-widget" id="sazeracShiftWidget">
+<div class="plant-dashboard-widget is-collapsed" id="sazeracShiftWidget">
   <style>
     :root {
       --primary-blue: #22548f;
@@ -23,59 +23,60 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
+    /* --- Header (button for accessibility) --- */
     .widget-header {
+      width: 100%;
+      border: 0;
       background-color: var(--primary-blue);
       color: var(--white);
-      padding: 14px 18px;
+      padding: 12px 16px;
       cursor: pointer;
       display: flex;
       justify-content: space-between;
       align-items: center;
       border-bottom: 3px solid #1a416e;
-      user-select: none;
+      text-align: left;
     }
 
-    .header-left {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
+    .header-left { display: flex; flex-direction: column; gap: 2px; }
 
     .brand-sub {
       font-size: 0.7rem;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 1.2px;
+      letter-spacing: 1.1px;
+      opacity: 0.95;
     }
 
-    .next-shift-banner {
-      font-size: 0.95rem;
-      font-weight: 500;
+    .next-shift-banner { font-size: 0.92rem; font-weight: 600; }
+
+    .collapsed-summary {
+      display: none;
+      margin-top: 6px;
+      font-size: 0.78rem;
+      opacity: 0.9;
+      line-height: 1.05rem;
     }
 
-    .toggle-arrow {
-      font-size: 0.7rem;
-      transition: transform 0.3s ease;
-    }
+    .toggle-arrow { font-size: 0.75rem; transition: transform 0.2s ease; }
 
-    .collapsed .toggle-arrow { transform: rotate(-90deg); }
-
+    /* --- Body (collapse animation via max-height) --- */
     .collapsible-body {
       max-height: 1200px;
-      transition: max-height 0.4s ease-in-out;
+      transition: max-height 0.35s ease-in-out;
       overflow: hidden;
     }
 
-    .collapsed .collapsible-body { max-height: 0; }
+    /* Small/collapsed state */
+    .plant-dashboard-widget.is-collapsed .collapsible-body { max-height: 0; }
+    .plant-dashboard-widget.is-collapsed .toggle-arrow { transform: rotate(-90deg); }
+    .plant-dashboard-widget.is-collapsed .collapsed-summary { display: block; }
 
-    .scroll-container {
-      padding: 18px;
-      background-color: var(--light-bg);
-    }
+    .scroll-container { padding: 16px; background-color: var(--light-bg); }
 
     .period-label {
       font-size: 0.75rem;
-      font-weight: 800;
+      font-weight: 900;
       color: var(--primary-blue);
       text-transform: uppercase;
       margin-bottom: 12px;
@@ -87,36 +88,19 @@
       background: var(--white);
       border: 1px solid var(--border);
       border-left: 6px solid #ccc;
-      padding: 14px;
+      padding: 12px;
       margin-bottom: 10px;
       display: flex;
       flex-direction: column;
       gap: 8px;
     }
-
     .shift-entry.night { border-left-color: var(--night-blue); }
     .shift-entry.day { border-left-color: var(--day-gold); }
     .shift-entry.standby { border-left-color: var(--standby-gray); border-style: dashed; }
 
-    .entry-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 10px;
-    }
-
-    .date-block {
-      font-weight: 700;
-      font-size: 1rem;
-      color: var(--text-main);
-    }
-
-    .time-block {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      white-space: nowrap;
-    }
+    .entry-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+    .date-block { font-weight: 800; font-size: 0.98rem; color: var(--text-main); }
+    .time-block { font-size: 0.85rem; font-weight: 800; color: var(--text-muted); white-space: nowrap; }
 
     .detail-box {
       font-size: 0.85rem;
@@ -131,7 +115,7 @@
 
     .data-label {
       width: 120px;
-      font-weight: 800;
+      font-weight: 900;
       font-size: 0.72rem;
       color: var(--text-muted);
       text-transform: uppercase;
@@ -139,27 +123,19 @@
       flex: 0 0 auto;
     }
 
-    .data-value {
-      font-size: 0.86rem;
-      color: var(--text-main);
-      line-height: 1.25rem;
-    }
+    .data-value { font-size: 0.86rem; color: var(--text-main); line-height: 1.2rem; }
 
     .tag {
       display: inline-block;
       margin-top: 2px;
       font-size: 0.7rem;
-      font-weight: 800;
+      font-weight: 900;
       padding: 2px 6px;
       border-radius: 2px;
       background: #eef2ff;
       color: #243b7a;
     }
-
-    .tag.attn {
-      background: #fff8e1;
-      color: #7a5a00;
-    }
+    .tag.attn { background: #fff8e1; color: #7a5a00; }
 
     .action-row {
       margin-top: 14px;
@@ -171,7 +147,7 @@
     .btn-sm {
       padding: 10px;
       font-size: 0.75rem;
-      font-weight: 800;
+      font-weight: 900;
       text-align: center;
       text-decoration: none;
       border-radius: 2px;
@@ -182,16 +158,26 @@
     .btn-outline { border: 1px solid var(--primary-blue); color: var(--primary-blue) !important; background: transparent; }
   </style>
 
-  <header class="widget-header"
-          onclick="document.getElementById('sazeracShiftWidget').classList.toggle('collapsed')">
+  <!-- Header is a real button with aria-expanded / aria-controls (disclosure pattern) -->
+  <button class="widget-header"
+          type="button"
+          aria-expanded="false"
+          aria-controls="sazeracShiftBody"
+          onclick="(function(){
+            var w=document.getElementById('sazeracShiftWidget');
+            var btn=w.querySelector('.widget-header');
+            var isCollapsed=w.classList.toggle('is-collapsed');
+            btn.setAttribute('aria-expanded', (!isCollapsed).toString());
+          })();">
     <div class="header-left">
       <span class="brand-sub">Sazerac • Shift & Time</span>
       <span class="next-shift-banner">Today: Night Shift (7:00 PM – 7:00 AM)</span>
+      <span class="collapsed-summary">Tap to view punches, timecard, and upcoming shifts.</span>
     </div>
     <span class="toggle-arrow">▼</span>
-  </header>
+  </button>
 
-  <div class="collapsible-body">
+  <div class="collapsible-body" id="sazeracShiftBody">
     <div class="scroll-container">
       <div class="period-label">Current pay period: Feb 08 – Feb 21</div>
 
@@ -271,32 +257,6 @@
         </div>
 
         <div><span class="tag attn">Be ready to clock in if you are called in</span></div>
-      </div>
-
-      <div class="shift-entry night">
-        <div class="entry-top">
-          <span class="date-block">Monday, Feb 16</span>
-          <span class="time-block">19:00 – 07:00</span>
-        </div>
-
-        <div class="detail-box">
-          <div class="data-row">
-            <span class="data-label">Area:</span>
-            <span class="data-value">Quality • Finished Goods</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Role:</span>
-            <span class="data-value">Quality Technician</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Clock status:</span>
-            <span class="data-value">Scheduled</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Tasks:</span>
-            <span class="data-value">Daily checks • Hold/release support • Documentation</span>
-          </div>
-        </div>
       </div>
 
       <div class="action-row">
