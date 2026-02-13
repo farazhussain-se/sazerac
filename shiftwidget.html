@@ -1,4 +1,4 @@
-<div class="plant-dashboard-widget is-collapsed" id="sazeracShiftWidget">
+<div class="plant-dashboard-widget" id="sazeracShiftWidget">
   <style>
     :root {
       --primary-blue: #22548f;
@@ -23,7 +23,6 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    /* --- Header (now just display, not clickable) --- */
     .widget-header {
       background-color: var(--primary-blue);
       color: var(--white);
@@ -35,34 +34,13 @@
 
     .brand-sub {
       font-size: 0.7rem;
-      font-weight: 800;
+      font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 1.1px;
       opacity: 0.95;
     }
 
-    .next-shift-banner { font-size: 0.92rem; font-weight: 600; }
-
-    .collapsed-summary {
-      display: none;
-      margin-top: 6px;
-      font-size: 0.78rem;
-      opacity: 0.9;
-      line-height: 1.05rem;
-    }
-
-    /* --- Body (collapse animation via max-height) --- */
-    .collapsible-body {
-      max-height: 1200px;
-      transition: max-height 0.35s ease-in-out;
-      overflow: hidden;
-    }
-
-    /* Small/collapsed state */
-    .plant-dashboard-widget.is-collapsed .collapsible-body { max-height: 0; }
-    .plant-dashboard-widget.is-collapsed .collapsed-summary { display: block; }
-    .plant-dashboard-widget.is-collapsed .toggle-footer { display: block; }
-    .plant-dashboard-widget:not(.is-collapsed) .toggle-footer { display: none; }
+    .next-shift-banner { font-size: 0.92rem; font-weight: 700; }
 
     .scroll-container { padding: 16px; background-color: var(--light-bg); }
 
@@ -76,23 +54,111 @@
       border-bottom: 1px solid var(--border);
     }
 
-    .shift-entry {
+    /* --- Shift Wheel Selector --- */
+    .shift-wheel-container {
+      position: relative;
+      height: 280px;
+      overflow: hidden;
       background: var(--white);
       border: 1px solid var(--border);
-      border-left: 6px solid #ccc;
-      padding: 12px;
-      margin-bottom: 10px;
+      border-radius: 4px;
+      margin-bottom: 16px;
+    }
+
+    .shift-wheel {
+      position: relative;
+      height: 100%;
+      overflow-y: auto;
+      scroll-snap-type: y mandatory;
+      -webkit-overflow-scrolling: touch;
+      padding: 90px 0;
+    }
+
+    .shift-wheel::-webkit-scrollbar { display: none; }
+    .shift-wheel { -ms-overflow-style: none; scrollbar-width: none; }
+
+    .shift-item {
+      scroll-snap-align: center;
+      height: 100px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      justify-content: center;
+      padding: 0 16px;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      opacity: 0.3;
+      transform: scale(0.85);
+      cursor: pointer;
     }
-    .shift-entry.night { border-left-color: var(--night-blue); }
-    .shift-entry.day { border-left-color: var(--day-gold); }
-    .shift-entry.standby { border-left-color: var(--standby-gray); border-style: dashed; }
 
-    .entry-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-    .date-block { font-weight: 800; font-size: 0.98rem; color: var(--text-main); }
-    .time-block { font-size: 0.85rem; font-weight: 800; color: var(--text-muted); white-space: nowrap; }
+    .shift-item.active {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .shift-item-date {
+      font-weight: 900;
+      font-size: 1rem;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .shift-item-time {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .shift-item-type {
+      display: inline-block;
+      font-size: 0.7rem;
+      font-weight: 900;
+      padding: 3px 8px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .shift-item.night .shift-item-type {
+      background: var(--night-blue);
+      color: white;
+    }
+
+    .shift-item.day .shift-item-type {
+      background: var(--day-gold);
+      color: white;
+    }
+
+    .shift-item.standby .shift-item-type {
+      background: var(--standby-gray);
+      color: white;
+    }
+
+    /* Center highlight area */
+    .wheel-highlight {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 100px;
+      transform: translateY(-50%);
+      background: linear-gradient(to bottom, 
+        rgba(34,84,143,0.03) 0%, 
+        rgba(34,84,143,0.08) 50%, 
+        rgba(34,84,143,0.03) 100%);
+      border-top: 2px solid rgba(34,84,143,0.2);
+      border-bottom: 2px solid rgba(34,84,143,0.2);
+      pointer-events: none;
+    }
+
+    /* --- Selected Shift Details --- */
+    .shift-details {
+      background: var(--white);
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 4px;
+      margin-bottom: 12px;
+    }
 
     .detail-box {
       font-size: 0.85rem;
@@ -100,6 +166,7 @@
       background: #f8f9fa;
       padding: 10px;
       border-radius: 2px;
+      margin-bottom: 10px;
     }
 
     .data-row { display: flex; margin-bottom: 6px; }
@@ -149,173 +216,183 @@
     .btn-fill { background: var(--primary-blue); color: #ffffff !important; }
     .btn-outline { border: 1px solid var(--primary-blue); color: var(--primary-blue) !important; background: transparent; }
 
-    /* --- Toggle footer button (bottom collapse) --- */
-    .toggle-footer {
-      width: 100%;
-      border: 0;
-      background: var(--light-bg);
-      border-top: 1px solid var(--border);
-      padding: 10px 16px;
-      cursor: pointer;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      font-size: 0.8rem;
-      font-weight: 800;
-      color: var(--primary-blue);
-      text-transform: uppercase;
-      letter-spacing: 0.6px;
-    }
-
-    .toggle-footer:hover { background: #e8ecf2; }
-
-    .toggle-arrow {
-      font-size: 0.75rem;
-      transition: transform 0.2s ease;
-    }
-
-    .plant-dashboard-widget.is-collapsed .toggle-arrow { transform: rotate(180deg); }
-    .plant-dashboard-widget:not(.is-collapsed) .toggle-arrow { transform: rotate(0deg); }
-
   </style>
 
-  <!-- Header (display only, not interactive) -->
   <div class="widget-header">
     <div class="header-left">
       <span class="brand-sub">Sazerac • Shift & Time</span>
-      <span class="next-shift-banner">Today: Night Shift (7:00 PM – 7:00 AM)</span>
-      <span class="collapsed-summary">Tap "Show Details" below to view punches, timecard, and upcoming shifts.</span>
+      <span class="next-shift-banner" id="currentShiftBanner">Scroll to view shift details</span>
     </div>
   </div>
 
-  <!-- Toggle button at bottom when collapsed -->
-  <button class="toggle-footer"
-          type="button"
-          aria-expanded="false"
-          aria-controls="sazeracShiftBody"
-          onclick="(function(){
-            var w=document.getElementById('sazeracShiftWidget');
-            var btn=w.querySelector('.toggle-footer');
-            var isCollapsed=w.classList.toggle('is-collapsed');
-            btn.setAttribute('aria-expanded', (!isCollapsed).toString());
-            btn.innerHTML = isCollapsed 
-              ? 'Show Details <span class=\'toggle-arrow\'>▼</span>' 
-              : 'Hide Details <span class=\'toggle-arrow\'>▼</span>';
-          })();">
-    Show Details <span class="toggle-arrow">▼</span>
-  </button>
+  <div class="scroll-container">
+    <div class="period-label">Current pay period: Feb 08 – Feb 21</div>
 
-  <div class="collapsible-body" id="sazeracShiftBody">
-    <div class="scroll-container">
-      <div class="period-label">Current pay period: Feb 08 – Feb 21</div>
-
-      <div class="shift-entry night">
-        <div class="entry-top">
-          <span class="date-block">Wednesday, Feb 11</span>
-          <span class="time-block">19:00 – 07:00</span>
+    <!-- Shift Wheel Selector -->
+    <div class="shift-wheel-container">
+      <div class="wheel-highlight"></div>
+      <div class="shift-wheel" id="shiftWheel">
+        <div class="shift-item night" data-shift="0">
+          <div class="shift-item-date">Wednesday, Feb 11</div>
+          <div class="shift-item-time">19:00 – 07:00</div>
+          <div class="shift-item-type">Night Shift</div>
         </div>
 
-        <div class="detail-box">
-          <div class="data-row">
-            <span class="data-label">Area:</span>
-            <span class="data-value">Bottling • Line 3</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Role:</span>
-            <span class="data-value">Packaging Operator</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Clock status:</span>
-            <span class="data-value">Not clocked in</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Time:</span>
-            <span class="data-value">View punches • Meal break • Missed punch</span>
-          </div>
+        <div class="shift-item day" data-shift="1">
+          <div class="shift-item-date">Friday, Feb 13</div>
+          <div class="shift-item-time">07:00 – 19:00</div>
+          <div class="shift-item-type">Day Shift</div>
         </div>
 
-        <div><span class="tag">Shift premium: Night (if eligible)</span></div>
-      </div>
-
-      <div class="shift-entry day">
-        <div class="entry-top">
-          <span class="date-block">Friday, Feb 13</span>
-          <span class="time-block">07:00 – 19:00</span>
+        <div class="shift-item standby" data-shift="2">
+          <div class="shift-item-date">Sunday, Feb 15</div>
+          <div class="shift-item-time">07:00 – 19:00</div>
+          <div class="shift-item-type">Standby</div>
         </div>
 
-        <div class="detail-box">
-          <div class="data-row">
-            <span class="data-label">Area:</span>
-            <span class="data-value">Warehouse • Shipping</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Role:</span>
-            <span class="data-value">Forklift Operator</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Clock status:</span>
-            <span class="data-value">Scheduled</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Notes:</span>
-            <span class="data-value">Arrive early if you need PPE or radio checkout</span>
-          </div>
+        <div class="shift-item night" data-shift="3">
+          <div class="shift-item-date">Monday, Feb 16</div>
+          <div class="shift-item-time">19:00 – 07:00</div>
+          <div class="shift-item-type">Night Shift</div>
         </div>
-      </div>
-
-      <div class="shift-entry standby">
-        <div class="entry-top">
-          <span class="date-block">Sunday, Feb 15</span>
-          <span class="time-block">07:00 – 19:00</span>
-        </div>
-
-        <div class="detail-box">
-          <div class="data-row">
-            <span class="data-label">Status:</span>
-            <span class="data-value">Standby (if called in)</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Area:</span>
-            <span class="data-value">Maintenance</span>
-          </div>
-          <div class="data-row">
-            <span class="data-label">Contact:</span>
-            <span class="data-value">Supervisor on duty</span>
-          </div>
-        </div>
-
-        <div><span class="tag attn">Be ready to clock in if you are called in</span></div>
-      </div>
-
-      <div class="action-row">
-        <a href="#" class="btn-sm btn-fill">Clock in / Out</a>
-        <a href="#" class="btn-sm btn-outline">My timecard</a>
-      </div>
-
-      <div class="action-row">
-        <a href="#" class="btn-sm btn-fill">Report an issue</a>
-        <a href="#" class="btn-sm btn-outline">Safety & quality</a>
       </div>
     </div>
 
-    <!-- Toggle button at bottom when expanded -->
-    <button class="toggle-footer"
-            type="button"
-            aria-expanded="true"
-            aria-controls="sazeracShiftBody"
-            onclick="(function(){
-              var w=document.getElementById('sazeracShiftWidget');
-              var btn=w.querySelectorAll('.toggle-footer');
-              var isCollapsed=w.classList.toggle('is-collapsed');
-              btn.forEach(function(b){
-                b.setAttribute('aria-expanded', (!isCollapsed).toString());
-                b.innerHTML = isCollapsed 
-                  ? 'Show Details <span class=\'toggle-arrow\'>▼</span>' 
-                  : 'Hide Details <span class=\'toggle-arrow\'>▼</span>';
-              });
-            })();">
-      Hide Details <span class="toggle-arrow">▼</span>
-    </button>
+    <!-- Details for Selected Shift -->
+    <div class="shift-details" id="shiftDetails">
+      <!-- Content will be dynamically updated by JavaScript -->
+    </div>
+
+    <div class="action-row">
+      <a href="#" class="btn-sm btn-fill">Clock in / Out</a>
+      <a href="#" class="btn-sm btn-outline">My timecard</a>
+    </div>
+
+    <div class="action-row">
+      <a href="#" class="btn-sm btn-fill">Report an issue</a>
+      <a href="#" class="btn-sm btn-outline">Safety & quality</a>
+    </div>
   </div>
+
+  <script>
+    (function() {
+      const shifts = [
+        {
+          date: "Wednesday, Feb 11",
+          time: "19:00 – 07:00",
+          type: "night",
+          area: "Bottling • Line 3",
+          role: "Packaging Operator",
+          status: "Not clocked in",
+          notes: "View punches • Meal break • Missed punch",
+          tag: "Shift premium: Night (if eligible)",
+          tagClass: ""
+        },
+        {
+          date: "Friday, Feb 13",
+          time: "07:00 – 19:00",
+          type: "day",
+          area: "Warehouse • Shipping",
+          role: "Forklift Operator",
+          status: "Scheduled",
+          notes: "Arrive early if you need PPE or radio checkout",
+          tag: null,
+          tagClass: ""
+        },
+        {
+          date: "Sunday, Feb 15",
+          time: "07:00 – 19:00",
+          type: "standby",
+          area: "Maintenance",
+          role: "Standby (if called in)",
+          status: "Supervisor on duty",
+          notes: null,
+          tag: "Be ready to clock in if you are called in",
+          tagClass: "attn"
+        },
+        {
+          date: "Monday, Feb 16",
+          time: "19:00 – 07:00",
+          type: "night",
+          area: "Quality • Finished Goods",
+          role: "Quality Technician",
+          status: "Scheduled",
+          notes: "Daily checks • Hold/release support • Documentation",
+          tag: null,
+          tagClass: ""
+        }
+      ];
+
+      const wheel = document.getElementById('shiftWheel');
+      const detailsContainer = document.getElementById('shiftDetails');
+      const banner = document.getElementById('currentShiftBanner');
+
+      function updateActiveShift() {
+        const items = wheel.querySelectorAll('.shift-item');
+        const wheelRect = wheel.getBoundingClientRect();
+        const centerY = wheelRect.top + wheelRect.height / 2;
+
+        let closestItem = null;
+        let closestDistance = Infinity;
+
+        items.forEach(item => {
+          const itemRect = item.getBoundingClientRect();
+          const itemCenterY = itemRect.top + itemRect.height / 2;
+          const distance = Math.abs(centerY - itemCenterY);
+
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closestItem = item;
+          }
+
+          item.classList.remove('active');
+        });
+
+        if (closestItem) {
+          closestItem.classList.add('active');
+          const shiftIndex = parseInt(closestItem.getAttribute('data-shift'));
+          updateShiftDetails(shiftIndex);
+        }
+      }
+
+      function updateShiftDetails(index) {
+        const shift = shifts[index];
+        banner.textContent = `${shift.date}: ${shift.time}`;
+
+        let html = `<div class="detail-box">`;
+        html += `<div class="data-row"><span class="data-label">Area:</span><span class="data-value">${shift.area}</span></div>`;
+        html += `<div class="data-row"><span class="data-label">Role:</span><span class="data-value">${shift.role}</span></div>`;
+        if (shift.type === 'standby') {
+          html += `<div class="data-row"><span class="data-label">Contact:</span><span class="data-value">${shift.status}</span></div>`;
+        } else {
+          html += `<div class="data-row"><span class="data-label">Clock status:</span><span class="data-value">${shift.status}</span></div>`;
+        }
+        if (shift.notes) {
+          html += `<div class="data-row"><span class="data-label">${shift.type === 'standby' ? 'Status:' : 'Time:'}</span><span class="data-value">${shift.notes}</span></div>`;
+        }
+        html += `</div>`;
+
+        if (shift.tag) {
+          html += `<div><span class="tag ${shift.tagClass}">${shift.tag}</span></div>`;
+        }
+
+        detailsContainer.innerHTML = html;
+      }
+
+      wheel.addEventListener('scroll', updateActiveShift);
+      
+      // Click to scroll to item
+      wheel.querySelectorAll('.shift-item').forEach(item => {
+        item.addEventListener('click', function() {
+          this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+      });
+
+      // Initialize
+      setTimeout(() => {
+        wheel.querySelectorAll('.shift-item')[0].scrollIntoView({ block: 'center' });
+        updateActiveShift();
+      }, 100);
+    })();
+  </script>
 </div>
