@@ -1,0 +1,455 @@
+<div class="plant-dashboard-widget" id="sazeracPayslipWidget">
+  <style>
+    :root{
+      --primary-blue:#22548f;
+      --light-bg:#f5f7fb;
+      --border:#d1d9e6;
+      --white:#ffffff;
+      --text-main:#222222;
+      --text-muted:#555555;
+      --ok:#2e7d32;
+      --accent:#1565c0;
+    }
+
+    .plant-dashboard-widget{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--white);
+      border:1px solid var(--border);
+      border-radius:4px;
+      max-width:480px;
+      margin:10px auto;
+      overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .widget-header{
+      background-color:var(--primary-blue);
+      color:var(--white);
+      padding:12px 16px;
+      border-bottom:3px solid #1a416e;
+    }
+
+    .header-left{display:flex;flex-direction:column;gap:2px;}
+    .brand-sub{
+      font-size:0.7rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1.1px;
+      opacity:0.95;
+    }
+    .title-line{font-size:0.95rem;font-weight:700;}
+
+    .scroll-container{padding:16px;background-color:var(--light-bg);}
+
+    /* Privacy Overlay */
+    .privacy-overlay{
+      position:relative;
+      background:var(--white);
+      border:2px solid var(--border);
+      border-radius:4px;
+      padding:60px 20px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+      transition:background 0.2s ease;
+    }
+
+    .privacy-overlay:active{
+      background:#f0f4f9;
+    }
+
+    .privacy-icon{
+      font-size:3rem;
+      margin-bottom:12px;
+      opacity:0.7;
+    }
+
+    .privacy-text{
+      font-size:0.9rem;
+      font-weight:700;
+      color:var(--text-main);
+      margin-bottom:6px;
+    }
+
+    .privacy-subtext{
+      font-size:0.75rem;
+      color:var(--text-muted);
+      line-height:1.2rem;
+    }
+
+    .hold-progress{
+      width:80%;
+      height:4px;
+      background:#e0e0e0;
+      border-radius:2px;
+      margin:16px auto 0;
+      overflow:hidden;
+    }
+
+    .hold-progress-bar{
+      height:100%;
+      background:var(--primary-blue);
+      width:0%;
+      transition:width 0.05s linear;
+      border-radius:2px;
+    }
+
+    /* Payslip Content (hidden until privacy removed) */
+    .payslip-content{
+      display:none;
+    }
+
+    .payslip-content.visible{
+      display:block;
+    }
+
+    .section-label{
+      font-size:0.75rem;
+      font-weight:900;
+      color:var(--primary-blue);
+      text-transform:uppercase;
+      margin:0 0 10px 0;
+      padding-bottom:6px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .card{
+      background:var(--white);
+      border:1px solid var(--border);
+      padding:14px;
+      border-radius:2px;
+      margin-bottom:12px;
+    }
+
+    .pay-summary{
+      display:flex;
+      justify-content:space-between;
+      align-items:baseline;
+      padding:16px;
+      background:linear-gradient(135deg, #1a416e 0%, var(--primary-blue) 100%);
+      color:white;
+      border-radius:4px;
+      margin-bottom:14px;
+    }
+
+    .pay-label{
+      font-size:0.8rem;
+      font-weight:700;
+      text-transform:uppercase;
+      letter-spacing:0.8px;
+      opacity:0.95;
+    }
+
+    .pay-amount{
+      font-size:2rem;
+      font-weight:300;
+      letter-spacing:-1px;
+    }
+
+    .data-row{display:flex;justify-content:space-between;margin-bottom:8px;padding:6px 0;}
+    .data-row:last-child{margin-bottom:0;}
+    .data-row.total{
+      border-top:2px solid var(--border);
+      padding-top:10px;
+      margin-top:6px;
+      font-weight:900;
+    }
+
+    .data-label{
+      font-size:0.85rem;
+      color:var(--text-main);
+    }
+
+    .data-value{
+      font-size:0.85rem;
+      color:var(--text-main);
+      font-weight:700;
+    }
+
+    .subsection{
+      margin-top:12px;
+      padding-top:12px;
+      border-top:1px dashed var(--border);
+    }
+
+    .subsection-title{
+      font-size:0.75rem;
+      font-weight:900;
+      color:var(--text-muted);
+      text-transform:uppercase;
+      margin-bottom:8px;
+      letter-spacing:0.6px;
+    }
+
+    .helper{
+      font-size:0.75rem;
+      color:var(--text-muted);
+      background:#fafbfc;
+      border:1px solid #eef0f2;
+      padding:10px;
+      border-radius:4px;
+      margin-top:10px;
+      line-height:1.2rem;
+    }
+
+    .action-row{
+      margin-top:14px;
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .btn-sm{
+      padding:10px;
+      font-size:0.75rem;
+      font-weight:900;
+      text-align:center;
+      text-decoration:none;
+      border-radius:2px;
+      text-transform:uppercase;
+      letter-spacing:0.4px;
+      display:inline-block;
+      border:1px solid var(--primary-blue);
+    }
+    .btn-fill{background:var(--primary-blue);color:#fff !important;}
+    .btn-outline{background:transparent;color:var(--primary-blue) !important;}
+
+    .tiny-note{
+      margin-top:10px;
+      font-size:0.72rem;
+      color:#777;
+      font-style:italic;
+      text-align:right;
+    }
+  </style>
+
+  <div class="widget-header">
+    <div class="header-left">
+      <span class="brand-sub">Sazerac • Payroll</span>
+      <span class="title-line">Pay statement</span>
+    </div>
+  </div>
+
+  <div class="scroll-container">
+
+    <!-- Privacy Overlay (tap and hold to reveal) -->
+    <div class="privacy-overlay" id="privacyOverlay">
+      <div class="privacy-icon">🔒</div>
+      <div class="privacy-text">Tap and hold to view</div>
+      <div class="privacy-subtext">Your pay information is private.<br>Hold this area for 2 seconds to reveal.</div>
+      <div class="hold-progress">
+        <div class="hold-progress-bar" id="holdProgressBar"></div>
+      </div>
+    </div>
+
+    <!-- Payslip Content (hidden until privacy removed) -->
+    <div class="payslip-content" id="payslipContent">
+
+      <div class="card">
+        <div class="section-label">Pay period: Feb 08 – Feb 21, 2026</div>
+        
+        <div class="pay-summary">
+          <div>
+            <div class="pay-label">Net Pay</div>
+          </div>
+          <div class="pay-amount">$2,847.36</div>
+        </div>
+
+        <div class="data-row">
+          <span class="data-label">Pay date</span>
+          <span class="data-value">Feb 28, 2026</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Pay frequency</span>
+          <span class="data-value">Bi-weekly</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Method</span>
+          <span class="data-value">Direct deposit</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Earnings</div>
+
+        <div class="data-row">
+          <span class="data-label">Regular hours (80.0 hrs @ $28.50/hr)</span>
+          <span class="data-value">$2,280.00</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Overtime (6.5 hrs @ $42.75/hr)</span>
+          <span class="data-value">$277.88</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Shift differential (5 shifts @ $2.00/hr)</span>
+          <span class="data-value">$80.00</span>
+        </div>
+
+        <div class="data-row total">
+          <span class="data-label">Total gross earnings</span>
+          <span class="data-value">$2,637.88</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Deductions</div>
+
+        <div class="subsection-title">Taxes</div>
+        <div class="data-row">
+          <span class="data-label">Federal income tax</span>
+          <span class="data-value">$316.54</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Social Security (6.2%)</span>
+          <span class="data-value">$163.55</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Medicare (1.45%)</span>
+          <span class="data-value">$38.25</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">State income tax (CO)</span>
+          <span class="data-value">$118.70</span>
+        </div>
+
+        <div class="subsection">
+          <div class="subsection-title">Benefits</div>
+          <div class="data-row">
+            <span class="data-label">Health insurance (pre-tax)</span>
+            <span class="data-value">$85.00</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Dental insurance (pre-tax)</span>
+            <span class="data-value">$12.00</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">401(k) contribution (5%)</span>
+            <span class="data-value">$131.89</span>
+          </div>
+        </div>
+
+        <div class="data-row total">
+          <span class="data-label">Total deductions</span>
+          <span class="data-value">$865.93</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Year to date (2026)</div>
+
+        <div class="data-row">
+          <span class="data-label">Gross earnings YTD</span>
+          <span class="data-value">$10,551.52</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Taxes withheld YTD</span>
+          <span class="data-value">$2,549.16</span>
+        </div>
+        <div class="data-row">
+          <span class="data-label">Benefits YTD</span>
+          <span class="data-value">$914.76</span>
+        </div>
+        <div class="data-row total">
+          <span class="data-label">Net pay YTD</span>
+          <span class="data-value">$7,087.60</span>
+        </div>
+      </div>
+
+      <div class="helper">
+        Questions about your pay? Contact HR or Payroll via the Directory. If you see a missing punch or incorrect hours, use "My timecard" in the Shift & Time widget.
+      </div>
+
+      <div class="action-row">
+        <a href="#" class="btn-sm btn-fill" onclick="return false;">Download PDF</a>
+        <a href="#" class="btn-sm btn-outline" onclick="return false;">View all pay stubs</a>
+      </div>
+
+      <div class="tiny-note">Demo view • Actual pay data varies by role, location, and deductions</div>
+
+      <!-- Button to re-hide -->
+      <div class="action-row" style="margin-top:20px;">
+        <button class="btn-sm btn-outline" style="grid-column:1/-1;" onclick="hidePayslip()">🔒 Hide pay information</button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    (function() {
+      const overlay = document.getElementById('privacyOverlay');
+      const content = document.getElementById('payslipContent');
+      const progressBar = document.getElementById('holdProgressBar');
+      
+      let holdTimeout = null;
+      let holdInterval = null;
+      let progress = 0;
+      const holdDuration = 2000; // 2 seconds
+
+      function startHold() {
+        progress = 0;
+        progressBar.style.width = '0%';
+        
+        const startTime = Date.now();
+        
+        holdInterval = setInterval(() => {
+          const elapsed = Date.now() - startTime;
+          progress = Math.min((elapsed / holdDuration) * 100, 100);
+          progressBar.style.width = progress + '%';
+        }, 50);
+
+        holdTimeout = setTimeout(() => {
+          revealPayslip();
+        }, holdDuration);
+      }
+
+      function cancelHold() {
+        if (holdTimeout) clearTimeout(holdTimeout);
+        if (holdInterval) clearInterval(holdInterval);
+        progressBar.style.width = '0%';
+        progress = 0;
+      }
+
+      function revealPayslip() {
+        overlay.style.display = 'none';
+        content.classList.add('visible');
+        cancelHold();
+      }
+
+      // Touch events (mobile)
+      overlay.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        startHold();
+      });
+
+      overlay.addEventListener('touchend', () => {
+        if (progress < 100) cancelHold();
+      });
+
+      overlay.addEventListener('touchcancel', () => {
+        cancelHold();
+      });
+
+      // Mouse events (desktop)
+      overlay.addEventListener('mousedown', () => {
+        startHold();
+      });
+
+      overlay.addEventListener('mouseup', () => {
+        if (progress < 100) cancelHold();
+      });
+
+      overlay.addEventListener('mouseleave', () => {
+        cancelHold();
+      });
+
+      // Global function to re-hide
+      window.hidePayslip = function() {
+        overlay.style.display = 'block';
+        content.classList.remove('visible');
+        progressBar.style.width = '0%';
+        progress = 0;
+      };
+    })();
+  </script>
+</div>
