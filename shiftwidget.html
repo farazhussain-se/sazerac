@@ -23,19 +23,12 @@
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     }
 
-    /* --- Header (button for accessibility) --- */
+    /* --- Header (now just display, not clickable) --- */
     .widget-header {
-      width: 100%;
-      border: 0;
       background-color: var(--primary-blue);
       color: var(--white);
       padding: 12px 16px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
       border-bottom: 3px solid #1a416e;
-      text-align: left;
     }
 
     .header-left { display: flex; flex-direction: column; gap: 2px; }
@@ -58,8 +51,6 @@
       line-height: 1.05rem;
     }
 
-    .toggle-arrow { font-size: 0.75rem; transition: transform 0.2s ease; }
-
     /* --- Body (collapse animation via max-height) --- */
     .collapsible-body {
       max-height: 1200px;
@@ -69,8 +60,9 @@
 
     /* Small/collapsed state */
     .plant-dashboard-widget.is-collapsed .collapsible-body { max-height: 0; }
-    .plant-dashboard-widget.is-collapsed .toggle-arrow { transform: rotate(-90deg); }
     .plant-dashboard-widget.is-collapsed .collapsed-summary { display: block; }
+    .plant-dashboard-widget.is-collapsed .toggle-footer { display: block; }
+    .plant-dashboard-widget:not(.is-collapsed) .toggle-footer { display: none; }
 
     .scroll-container { padding: 16px; background-color: var(--light-bg); }
 
@@ -156,25 +148,62 @@
 
     .btn-fill { background: var(--primary-blue); color: #ffffff !important; }
     .btn-outline { border: 1px solid var(--primary-blue); color: var(--primary-blue) !important; background: transparent; }
+
+    /* --- Toggle footer button (bottom collapse) --- */
+    .toggle-footer {
+      width: 100%;
+      border: 0;
+      background: var(--light-bg);
+      border-top: 1px solid var(--border);
+      padding: 10px 16px;
+      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 800;
+      color: var(--primary-blue);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .toggle-footer:hover { background: #e8ecf2; }
+
+    .toggle-arrow {
+      font-size: 0.75rem;
+      transition: transform 0.2s ease;
+    }
+
+    .plant-dashboard-widget.is-collapsed .toggle-arrow { transform: rotate(180deg); }
+    .plant-dashboard-widget:not(.is-collapsed) .toggle-arrow { transform: rotate(0deg); }
+
   </style>
 
-  <!-- Header is a real button with aria-expanded / aria-controls (disclosure pattern) -->
-  <button class="widget-header"
+  <!-- Header (display only, not interactive) -->
+  <div class="widget-header">
+    <div class="header-left">
+      <span class="brand-sub">Sazerac • Shift & Time</span>
+      <span class="next-shift-banner">Today: Night Shift (7:00 PM – 7:00 AM)</span>
+      <span class="collapsed-summary">Tap "Show Details" below to view punches, timecard, and upcoming shifts.</span>
+    </div>
+  </div>
+
+  <!-- Toggle button at bottom when collapsed -->
+  <button class="toggle-footer"
           type="button"
           aria-expanded="false"
           aria-controls="sazeracShiftBody"
           onclick="(function(){
             var w=document.getElementById('sazeracShiftWidget');
-            var btn=w.querySelector('.widget-header');
+            var btn=w.querySelector('.toggle-footer');
             var isCollapsed=w.classList.toggle('is-collapsed');
             btn.setAttribute('aria-expanded', (!isCollapsed).toString());
+            btn.innerHTML = isCollapsed 
+              ? 'Show Details <span class=\'toggle-arrow\'>▼</span>' 
+              : 'Hide Details <span class=\'toggle-arrow\'>▼</span>';
           })();">
-    <div class="header-left">
-      <span class="brand-sub">Sazerac • Shift & Time</span>
-      <span class="next-shift-banner">Today: Night Shift (7:00 PM – 7:00 AM)</span>
-      <span class="collapsed-summary">Tap to view punches, timecard, and upcoming shifts.</span>
-    </div>
-    <span class="toggle-arrow">▼</span>
+    Show Details <span class="toggle-arrow">▼</span>
   </button>
 
   <div class="collapsible-body" id="sazeracShiftBody">
@@ -269,5 +298,24 @@
         <a href="#" class="btn-sm btn-outline">Safety & quality</a>
       </div>
     </div>
+
+    <!-- Toggle button at bottom when expanded -->
+    <button class="toggle-footer"
+            type="button"
+            aria-expanded="true"
+            aria-controls="sazeracShiftBody"
+            onclick="(function(){
+              var w=document.getElementById('sazeracShiftWidget');
+              var btn=w.querySelectorAll('.toggle-footer');
+              var isCollapsed=w.classList.toggle('is-collapsed');
+              btn.forEach(function(b){
+                b.setAttribute('aria-expanded', (!isCollapsed).toString());
+                b.innerHTML = isCollapsed 
+                  ? 'Show Details <span class=\'toggle-arrow\'>▼</span>' 
+                  : 'Hide Details <span class=\'toggle-arrow\'>▼</span>';
+              });
+            })();">
+      Hide Details <span class="toggle-arrow">▼</span>
+    </button>
   </div>
 </div>
