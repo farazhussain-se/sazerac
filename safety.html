@@ -1,0 +1,452 @@
+<div class="plant-dashboard-widget is-collapsed" id="sazeracSafetyWidget">
+  <style>
+    :root{
+      --primary-blue:#22548f;
+      --light-bg:#f5f7fb;
+      --border:#d1d9e6;
+      --white:#ffffff;
+      --text-main:#222222;
+      --text-muted:#555555;
+      --ok:#2e7d32;
+      --warn:#fca311;
+      --danger:#c62828;
+    }
+
+    .plant-dashboard-widget{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--white);
+      border:1px solid var(--border);
+      border-radius:4px;
+      max-width:480px;
+      margin:10px auto;
+      overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Header */
+    .widget-header{
+      width:100%;
+      border:0;
+      background-color:var(--danger);
+      color:var(--white);
+      padding:12px 16px;
+      cursor:pointer;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom:3px solid #a01e1e;
+      text-align:left;
+    }
+
+    .header-left{display:flex;flex-direction:column;gap:2px;}
+    .brand-sub{
+      font-size:0.7rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1.1px;
+      opacity:0.95;
+    }
+    .title-line{font-size:0.95rem;font-weight:700;}
+    .collapsed-summary{
+      display:none;
+      margin-top:6px;
+      font-size:0.78rem;
+      opacity:0.9;
+      line-height:1.05rem;
+    }
+    .toggle-arrow{font-size:0.75rem;transition:transform 0.2s ease;}
+
+    .collapsible-body{max-height:1600px;transition:max-height 0.35s ease-in-out;overflow:hidden;}
+    .plant-dashboard-widget.is-collapsed .collapsible-body{max-height:0;}
+    .plant-dashboard-widget.is-collapsed .toggle-arrow{transform:rotate(-90deg);}
+    .plant-dashboard-widget.is-collapsed .collapsed-summary{display:block;}
+
+    .scroll-container{padding:16px;background-color:var(--light-bg);}
+
+    .alert-banner{
+      background:#fff3cd;
+      border-left:4px solid var(--warn);
+      padding:12px;
+      margin-bottom:14px;
+      border-radius:2px;
+      font-size:0.85rem;
+      line-height:1.3rem;
+      color:#856404;
+    }
+    .alert-banner strong{display:block;margin-bottom:4px;font-weight:900;}
+
+    .section-label{
+      font-size:0.75rem;
+      font-weight:900;
+      color:var(--primary-blue);
+      text-transform:uppercase;
+      margin:0 0 10px 0;
+      padding-bottom:6px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .card{
+      background:var(--white);
+      border:1px solid var(--border);
+      padding:14px;
+      border-radius:2px;
+      margin-bottom:12px;
+    }
+
+    .helper{
+      font-size:0.8rem;
+      color:var(--text-muted);
+      line-height:1.2rem;
+      margin-top:8px;
+      background:#fafbfc;
+      border:1px solid #eef0f2;
+      padding:10px;
+      border-radius:4px;
+    }
+
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+    label{
+      display:block;
+      font-size:0.72rem;
+      font-weight:900;
+      color:var(--text-muted);
+      text-transform:uppercase;
+      letter-spacing:0.6px;
+      margin-bottom:6px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      box-sizing:border-box;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:3px;
+      background:#fff;
+      font-size:0.9rem;
+      color:var(--text-main);
+      outline:none;
+    }
+
+    textarea{min-height:90px;resize:vertical;}
+
+    .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--border);
+      background:#fff;
+      padding:8px 10px;
+      border-radius:16px;
+      font-size:0.8rem;
+      color:var(--text-main);
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill input[type="checkbox"]{width:auto;margin:0;}
+
+    .severity{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:8px;
+      margin-top:6px;
+    }
+    .sev-btn{
+      border:1px solid var(--border);
+      background:#fff;
+      padding:10px 8px;
+      border-radius:6px;
+      text-align:center;
+      font-size:0.78rem;
+      font-weight:900;
+      cursor:pointer;
+      color:var(--text-main);
+    }
+    .sev-btn[data-level="Near Miss"]{border-left:6px solid var(--ok);}
+    .sev-btn[data-level="Minor"]{border-left:6px solid var(--warn);}
+    .sev-btn[data-level="Serious"]{border-left:6px solid var(--danger);}
+    .sev-btn.is-selected{outline:2px solid rgba(34,84,143,0.25);background:#f0f4f9;}
+
+    .action-row{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .btn-sm{
+      padding:10px;
+      font-size:0.75rem;
+      font-weight:900;
+      text-align:center;
+      text-decoration:none;
+      border-radius:2px;
+      text-transform:uppercase;
+      letter-spacing:0.4px;
+      display:inline-block;
+      border:1px solid var(--danger);
+    }
+    .btn-fill{background:var(--danger);color:#fff !important;}
+    .btn-outline{background:transparent;color:var(--danger) !important;}
+
+    .tiny-note{
+      margin-top:10px;
+      font-size:0.72rem;
+      color:#777;
+      font-style:italic;
+      text-align:right;
+    }
+  </style>
+
+  <button class="widget-header" type="button" aria-expanded="false" aria-controls="sazeracSafetyBody"
+    onclick="(function(){
+      var w=document.getElementById('sazeracSafetyWidget');
+      var btn=w.querySelector('.widget-header');
+      var isCollapsed=w.classList.toggle('is-collapsed');
+      btn.setAttribute('aria-expanded', (!isCollapsed).toString());
+    })();">
+    <div class="header-left">
+      <span class="brand-sub">Sazerac • Safety</span>
+      <span class="title-line">Report a safety incident or near miss</span>
+      <span class="collapsed-summary">Tap to log injuries, hazards, near misses, or unsafe conditions.</span>
+    </div>
+    <span class="toggle-arrow">▼</span>
+  </button>
+
+  <div class="collapsible-body" id="sazeracSafetyBody">
+    <div class="scroll-container">
+
+      <div class="alert-banner">
+        <strong>⚠ Medical emergency?</strong>
+        Call emergency services (911) and your site safety coordinator immediately. Complete this report after the person is safe.
+      </div>
+
+      <div class="card">
+        <div class="section-label">What happened</div>
+
+        <div>
+          <label for="incidentType">Incident type</label>
+          <select id="incidentType" name="incidentType">
+            <option>Injury (first aid)</option>
+            <option>Injury (medical treatment required)</option>
+            <option>Near miss (could have caused injury)</option>
+            <option>Unsafe condition</option>
+            <option>Hazard (spill, leak, fire, chemical)</option>
+            <option>Equipment damage</option>
+            <option>Other safety concern</option>
+          </select>
+        </div>
+
+        <div class="grid-2" style="margin-top:10px;">
+          <div>
+            <label for="whenOccurred">When did it happen?</label>
+            <select id="whenOccurred" name="whenOccurred">
+              <option>Right now</option>
+              <option>Within the last hour</option>
+              <option>Earlier this shift</option>
+              <option>Previous shift</option>
+              <option>Not sure / Exact time unknown</option>
+            </select>
+          </div>
+          <div>
+            <label for="exactTime">Exact time (if known)</label>
+            <input type="time" id="exactTime" name="exactTime">
+          </div>
+        </div>
+
+        <div class="grid-2" style="margin-top:10px;">
+          <div>
+            <label for="location">Location / Area</label>
+            <select id="location" name="location">
+              <option>Bottling / Packaging</option>
+              <option>Distilling</option>
+              <option>Warehouse / Shipping</option>
+              <option>Maintenance shop</option>
+              <option>Break room / Office</option>
+              <option>Loading dock</option>
+              <option>Parking lot / Exterior</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div>
+            <label for="specificLocation">Specific spot (line, room, dock)</label>
+            <input id="specificLocation" name="specificLocation" placeholder="Example: Line 2, near filler">
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="description">What happened? (Be specific)</label>
+          <textarea id="description" name="description" placeholder="Example: Stepped on wet floor near capper, slipped but caught balance on railing. No injury. Floor was wet from leak above."></textarea>
+        </div>
+
+        <div class="helper">
+          Include what you were doing, what went wrong, and any equipment or materials involved.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Severity</div>
+
+        <input type="hidden" id="severity" name="severity" value="Near Miss">
+
+        <div class="severity" role="group" aria-label="Severity">
+          <div class="sev-btn is-selected" data-level="Near Miss" onclick="setSeverity('Near Miss', this)">Near Miss</div>
+          <div class="sev-btn" data-level="Minor" onclick="setSeverity('Minor', this)">Minor</div>
+          <div class="sev-btn" data-level="Serious" onclick="setSeverity('Serious', this)">Serious</div>
+        </div>
+
+        <div class="helper">
+          <strong>Near Miss:</strong> No injury, but could have been.<br>
+          <strong>Minor:</strong> First aid only (bandage, ice, etc.).<br>
+          <strong>Serious:</strong> Needs doctor, ER, or time off work.
+        </div>
+
+        <script>
+          function setSeverity(level, el){
+            document.getElementById('severity').value = level;
+            var buttons = el.parentNode.querySelectorAll('.sev-btn');
+            buttons.forEach(function(b){ b.classList.remove('is-selected'); });
+            el.classList.add('is-selected');
+          }
+        </script>
+      </div>
+
+      <div class="card">
+        <div class="section-label">People involved</div>
+
+        <div class="grid-2">
+          <div>
+            <label for="injured">Who was injured / involved?</label>
+            <input id="injured" name="injured" placeholder="Name (or 'self')">
+          </div>
+          <div>
+            <label for="injuredRole">Their role</label>
+            <input id="injuredRole" name="injuredRole" placeholder="Example: Operator, Forklift driver">
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="witnesses">Witnesses (if any)</label>
+          <input id="witnesses" name="witnesses" placeholder="Names or 'None' if no one else saw it">
+        </div>
+
+        <div class="helper">
+          If you were injured and need treatment, tell your supervisor now before finishing this report.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Contributing factors (check all that apply)</div>
+
+        <div class="pill-row">
+          <label class="pill">
+            <input type="checkbox" name="factors" value="slip_trip">
+            Slip / trip / fall
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="caught_pinch">
+            Caught / pinched / crushed
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="cut_puncture">
+            Cut / puncture
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="strain">
+            Strain / overexertion / lifting
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="chemical">
+            Chemical exposure
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="burn">
+            Burn / heat / cold
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="noise">
+            Noise / hearing
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="electric">
+            Electrical
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="moving_parts">
+            Moving equipment / machinery
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="ppe">
+            PPE not worn / available
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="procedure">
+            Procedure not followed
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="environment">
+            Poor lighting / visibility / weather
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="distraction">
+            Distraction / fatigue / rushing
+          </label>
+          <label class="pill">
+            <input type="checkbox" name="factors" value="other">
+            Other
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Immediate actions taken</div>
+
+        <div>
+          <label for="actionsTaken">What did you do right after?</label>
+          <textarea id="actionsTaken" name="actionsTaken" placeholder="Example: Stopped the line, notified supervisor, put up caution cone, moved person to break room."></textarea>
+        </div>
+
+        <div class="grid-2" style="margin-top:10px;">
+          <div>
+            <label for="areaSecured">Is the area safe now?</label>
+            <select id="areaSecured" name="areaSecured">
+              <option>Yes</option>
+              <option>No / Still hazardous</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+          <div>
+            <label for="supervisorNotified">Supervisor notified?</label>
+            <select id="supervisorNotified" name="supervisorNotified">
+              <option>Yes</option>
+              <option>Not yet</option>
+              <option>Not required</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Reported by</div>
+
+        <div class="grid-2">
+          <div>
+            <label for="reporterName">Your name</label>
+            <input id="reporterName" name="reporterName" placeholder="Auto-filled in real app">
+          </div>
+          <div>
+            <label for="reporterContact">Best contact (radio/phone/ext)</label>
+            <input id="reporterContact" name="reporterContact" placeholder="Example: Ext 214 / Radio 3">
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="reporterRole">Your role</label>
+          <input id="reporterRole" name="reporterRole" placeholder="Example: Line operator, Maintenance tech">
+        </div>
+      </div>
+
+      <div class="action-row">
+        <a href="#" class="btn-sm btn-fill" onclick="return false;">Submit report</a>
+        <a href="#" class="btn-sm btn-outline" onclick="return false;">Add photo</a>
+      </div>
+
+      <div class="tiny-note">Demo view • Report goes to site safety coordinator per your location</div>
+    </div>
+  </div>
+</div>
