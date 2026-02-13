@@ -1,0 +1,313 @@
+<div class="plant-dashboard-widget" id="sazeracShiftWidget">
+  <style>
+    :root {
+      --primary-blue: #22548f;
+      --light-bg: #f5f7fb;
+      --border: #d1d9e6;
+      --night-blue: #3949ab;
+      --day-gold: #b28900;
+      --standby-gray: #546e7a;
+      --white: #ffffff;
+      --text-main: #222222;
+      --text-muted: #555555;
+    }
+
+    .plant-dashboard-widget {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      max-width: 480px;
+      margin: 10px auto;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .widget-header {
+      background-color: var(--primary-blue);
+      color: var(--white);
+      padding: 14px 18px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 3px solid #1a416e;
+      user-select: none;
+    }
+
+    .header-left {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .brand-sub {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+
+    .next-shift-banner {
+      font-size: 0.95rem;
+      font-weight: 500;
+    }
+
+    .toggle-arrow {
+      font-size: 0.7rem;
+      transition: transform 0.3s ease;
+    }
+
+    .collapsed .toggle-arrow { transform: rotate(-90deg); }
+
+    .collapsible-body {
+      max-height: 1200px;
+      transition: max-height 0.4s ease-in-out;
+      overflow: hidden;
+    }
+
+    .collapsed .collapsible-body { max-height: 0; }
+
+    .scroll-container {
+      padding: 18px;
+      background-color: var(--light-bg);
+    }
+
+    .period-label {
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--primary-blue);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .shift-entry {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-left: 6px solid #ccc;
+      padding: 14px;
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .shift-entry.night { border-left-color: var(--night-blue); }
+    .shift-entry.day { border-left-color: var(--day-gold); }
+    .shift-entry.standby { border-left-color: var(--standby-gray); border-style: dashed; }
+
+    .entry-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 10px;
+    }
+
+    .date-block {
+      font-weight: 700;
+      font-size: 1rem;
+      color: var(--text-main);
+    }
+
+    .time-block {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .detail-box {
+      font-size: 0.85rem;
+      color: var(--text-main);
+      background: #f8f9fa;
+      padding: 10px;
+      border-radius: 2px;
+    }
+
+    .data-row { display: flex; margin-bottom: 6px; }
+    .data-row:last-child { margin-bottom: 0; }
+
+    .data-label {
+      width: 120px;
+      font-weight: 800;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      flex: 0 0 auto;
+    }
+
+    .data-value {
+      font-size: 0.86rem;
+      color: var(--text-main);
+      line-height: 1.25rem;
+    }
+
+    .tag {
+      display: inline-block;
+      margin-top: 2px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 2px;
+      background: #eef2ff;
+      color: #243b7a;
+    }
+
+    .tag.attn {
+      background: #fff8e1;
+      color: #7a5a00;
+    }
+
+    .action-row {
+      margin-top: 14px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .btn-sm {
+      padding: 10px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 2px;
+      text-transform: uppercase;
+    }
+
+    .btn-fill { background: var(--primary-blue); color: #ffffff !important; }
+    .btn-outline { border: 1px solid var(--primary-blue); color: var(--primary-blue) !important; background: transparent; }
+  </style>
+
+  <header class="widget-header"
+          onclick="document.getElementById('sazeracShiftWidget').classList.toggle('collapsed')">
+    <div class="header-left">
+      <span class="brand-sub">Sazerac • Shift & Time</span>
+      <span class="next-shift-banner">Today: Night Shift (7:00 PM – 7:00 AM)</span>
+    </div>
+    <span class="toggle-arrow">▼</span>
+  </header>
+
+  <div class="collapsible-body">
+    <div class="scroll-container">
+      <div class="period-label">Current pay period: Feb 08 – Feb 21</div>
+
+      <div class="shift-entry night">
+        <div class="entry-top">
+          <span class="date-block">Wednesday, Feb 11</span>
+          <span class="time-block">19:00 – 07:00</span>
+        </div>
+
+        <div class="detail-box">
+          <div class="data-row">
+            <span class="data-label">Area:</span>
+            <span class="data-value">Bottling • Line 3</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Role:</span>
+            <span class="data-value">Packaging Operator</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Clock status:</span>
+            <span class="data-value">Not clocked in</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Time:</span>
+            <span class="data-value">View punches • Meal break • Missed punch</span>
+          </div>
+        </div>
+
+        <div><span class="tag">Shift premium: Night (if eligible)</span></div>
+      </div>
+
+      <div class="shift-entry day">
+        <div class="entry-top">
+          <span class="date-block">Friday, Feb 13</span>
+          <span class="time-block">07:00 – 19:00</span>
+        </div>
+
+        <div class="detail-box">
+          <div class="data-row">
+            <span class="data-label">Area:</span>
+            <span class="data-value">Warehouse • Shipping</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Role:</span>
+            <span class="data-value">Forklift Operator</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Clock status:</span>
+            <span class="data-value">Scheduled</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Notes:</span>
+            <span class="data-value">Arrive early if you need PPE or radio checkout</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="shift-entry standby">
+        <div class="entry-top">
+          <span class="date-block">Sunday, Feb 15</span>
+          <span class="time-block">07:00 – 19:00</span>
+        </div>
+
+        <div class="detail-box">
+          <div class="data-row">
+            <span class="data-label">Status:</span>
+            <span class="data-value">Standby (if called in)</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Area:</span>
+            <span class="data-value">Maintenance</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Contact:</span>
+            <span class="data-value">Supervisor on duty</span>
+          </div>
+        </div>
+
+        <div><span class="tag attn">Be ready to clock in if you are called in</span></div>
+      </div>
+
+      <div class="shift-entry night">
+        <div class="entry-top">
+          <span class="date-block">Monday, Feb 16</span>
+          <span class="time-block">19:00 – 07:00</span>
+        </div>
+
+        <div class="detail-box">
+          <div class="data-row">
+            <span class="data-label">Area:</span>
+            <span class="data-value">Quality • Finished Goods</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Role:</span>
+            <span class="data-value">Quality Technician</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Clock status:</span>
+            <span class="data-value">Scheduled</span>
+          </div>
+          <div class="data-row">
+            <span class="data-label">Tasks:</span>
+            <span class="data-value">Daily checks • Hold/release support • Documentation</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <a href="#" class="btn-sm btn-fill">Clock in / Out</a>
+        <a href="#" class="btn-sm btn-outline">My timecard</a>
+      </div>
+
+      <div class="action-row">
+        <a href="#" class="btn-sm btn-fill">Report an issue</a>
+        <a href="#" class="btn-sm btn-outline">Safety & quality</a>
+      </div>
+    </div>
+  </div>
+</div>
