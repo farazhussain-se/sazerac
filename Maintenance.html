@@ -1,0 +1,372 @@
+<div class="plant-dashboard-widget is-collapsed" id="sazeracMaintenanceWidget">
+  <style>
+    :root{
+      --primary-blue:#22548f;
+      --light-bg:#f5f7fb;
+      --border:#d1d9e6;
+      --white:#ffffff;
+      --text-main:#222222;
+      --text-muted:#555555;
+      --ok:#2e7d32;
+      --warn:#fca311;
+      --danger:#c62828;
+    }
+
+    .plant-dashboard-widget{
+      font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+      background:var(--white);
+      border:1px solid var(--border);
+      border-radius:4px;
+      max-width:480px;
+      margin:10px auto;
+      overflow:hidden;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    /* Header as disclosure button (accessible) */
+    .widget-header{
+      width:100%;
+      border:0;
+      background-color:var(--primary-blue);
+      color:var(--white);
+      padding:12px 16px;
+      cursor:pointer;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      border-bottom:3px solid #1a416e;
+      text-align:left;
+    }
+
+    .header-left{display:flex;flex-direction:column;gap:2px;}
+    .brand-sub{
+      font-size:0.7rem;
+      font-weight:900;
+      text-transform:uppercase;
+      letter-spacing:1.1px;
+      opacity:0.95;
+    }
+    .title-line{font-size:0.95rem;font-weight:700;}
+    .collapsed-summary{
+      display:none;
+      margin-top:6px;
+      font-size:0.78rem;
+      opacity:0.9;
+      line-height:1.05rem;
+    }
+    .toggle-arrow{font-size:0.75rem;transition:transform 0.2s ease;}
+
+    .collapsible-body{max-height:1400px;transition:max-height 0.35s ease-in-out;overflow:hidden;}
+    .plant-dashboard-widget.is-collapsed .collapsible-body{max-height:0;}
+    .plant-dashboard-widget.is-collapsed .toggle-arrow{transform:rotate(-90deg);}
+    .plant-dashboard-widget.is-collapsed .collapsed-summary{display:block;}
+
+    .scroll-container{padding:16px;background-color:var(--light-bg);}
+
+    .section-label{
+      font-size:0.75rem;
+      font-weight:900;
+      color:var(--primary-blue);
+      text-transform:uppercase;
+      margin:0 0 10px 0;
+      padding-bottom:6px;
+      border-bottom:1px solid var(--border);
+    }
+
+    .card{
+      background:var(--white);
+      border:1px solid var(--border);
+      padding:14px;
+      border-radius:2px;
+      margin-bottom:12px;
+    }
+
+    .helper{
+      font-size:0.8rem;
+      color:var(--text-muted);
+      line-height:1.2rem;
+      margin-top:8px;
+      background:#fafbfc;
+      border:1px solid #eef0f2;
+      padding:10px;
+      border-radius:4px;
+    }
+
+    .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+
+    label{
+      display:block;
+      font-size:0.72rem;
+      font-weight:900;
+      color:var(--text-muted);
+      text-transform:uppercase;
+      letter-spacing:0.6px;
+      margin-bottom:6px;
+    }
+
+    input, select, textarea{
+      width:100%;
+      box-sizing:border-box;
+      padding:10px;
+      border:1px solid var(--border);
+      border-radius:3px;
+      background:#fff;
+      font-size:0.9rem;
+      color:var(--text-main);
+      outline:none;
+    }
+
+    textarea{min-height:86px;resize:vertical;}
+
+    .pill-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+    .pill{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      border:1px solid var(--border);
+      background:#fff;
+      padding:8px 10px;
+      border-radius:16px;
+      font-size:0.8rem;
+      color:var(--text-main);
+      cursor:pointer;
+      user-select:none;
+    }
+    .pill input{width:auto;margin:0;}
+
+    .priority{
+      display:grid;
+      grid-template-columns:repeat(4,1fr);
+      gap:8px;
+      margin-top:6px;
+    }
+    .prio-btn{
+      border:1px solid var(--border);
+      background:#fff;
+      padding:10px 8px;
+      border-radius:6px;
+      text-align:center;
+      font-size:0.78rem;
+      font-weight:900;
+      cursor:pointer;
+      color:var(--text-main);
+    }
+    .prio-btn[data-level="Low"]{border-left:6px solid var(--ok);}
+    .prio-btn[data-level="Med"]{border-left:6px solid #1565c0;}
+    .prio-btn[data-level="High"]{border-left:6px solid var(--warn);}
+    .prio-btn[data-level="Critical"]{border-left:6px solid var(--danger);}
+    .prio-btn.is-selected{outline:2px solid rgba(34,84,143,0.25);background:#f0f4f9;}
+
+    .action-row{margin-top:12px;display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+    .btn-sm{
+      padding:10px;
+      font-size:0.75rem;
+      font-weight:900;
+      text-align:center;
+      text-decoration:none;
+      border-radius:2px;
+      text-transform:uppercase;
+      letter-spacing:0.4px;
+      display:inline-block;
+      border:1px solid var(--primary-blue);
+    }
+    .btn-fill{background:var(--primary-blue);color:#fff !important;}
+    .btn-outline{background:transparent;color:var(--primary-blue) !important;}
+
+    .tiny-note{
+      margin-top:10px;
+      font-size:0.72rem;
+      color:#777;
+      font-style:italic;
+      text-align:right;
+    }
+  </style>
+
+  <div class="plant-dashboard-widget is-collapsed" id="sazeracMaintenanceWidget_inner"></div>
+
+  <button class="widget-header" type="button" aria-expanded="false" aria-controls="sazeracMaintenanceBody"
+    onclick="(function(){
+      var w=document.getElementById('sazeracMaintenanceWidget');
+      var btn=w.querySelector('.widget-header');
+      var isCollapsed=w.classList.toggle('is-collapsed');
+      btn.setAttribute('aria-expanded', (!isCollapsed).toString());
+    })();">
+    <div class="header-left">
+      <span class="brand-sub">Sazerac • Maintenance</span>
+      <span class="title-line">Log a maintenance request</span>
+      <span class="collapsed-summary">Tap to report equipment issues, safety hazards, or facility repairs.</span>
+    </div>
+    <span class="toggle-arrow">▼</span>
+  </button>
+
+  <div class="collapsible-body" id="sazeracMaintenanceBody">
+    <div class="scroll-container">
+
+      <div class="card">
+        <div class="section-label">What needs attention</div>
+
+        <div class="grid-2">
+          <div>
+            <label for="reqType">Request type</label>
+            <select id="reqType" name="reqType">
+              <option>Equipment issue</option>
+              <option>Facility issue</option>
+              <option>Safety concern</option>
+              <option>Utilities (air/steam/water)</option>
+              <option>IT/automation (HMI/scanner)</option>
+            </select>
+          </div>
+
+          <div>
+            <label for="area">Area / Department</label>
+            <select id="area" name="area">
+              <option>Bottling / Packaging</option>
+              <option>Distilling</option>
+              <option>Warehouse / Shipping</option>
+              <option>Maintenance</option>
+              <option>Quality</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="location">Location (Line / Room / Dock)</label>
+          <input id="location" name="location" placeholder="Example: Line 3 • Capper station / Dock 2 / Boiler room">
+        </div>
+
+        <div class="grid-2" style="margin-top:10px;">
+          <div>
+            <label for="assetId">Equipment / Asset ID (if known)</label>
+            <input id="assetId" name="assetId" placeholder="Example: L3-CAP-014">
+          </div>
+          <div>
+            <label for="tagNo">Tag / Barcode (optional)</label>
+            <input id="tagNo" name="tagNo" placeholder="Scan or enter tag #">
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="issueDesc">What’s happening?</label>
+          <textarea id="issueDesc" name="issueDesc" placeholder="Example: Capper jams every 5–10 minutes; alarms after reset; started at ~2:10 AM."></textarea>
+        </div>
+
+        <div class="grid-2" style="margin-top:10px;">
+          <div>
+            <label for="impact">Impact</label>
+            <select id="impact" name="impact">
+              <option>Stops production / shipment</option>
+              <option>Slows the line</option>
+              <option>Quality risk</option>
+              <option>Safety risk</option>
+              <option>Minor / can wait</option>
+            </select>
+          </div>
+          <div>
+            <label for="whenStarted">When did it start?</label>
+            <select id="whenStarted" name="whenStarted">
+              <option>Right now</option>
+              <option>Within the last hour</option>
+              <option>Earlier this shift</option>
+              <option>Previous shift</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Priority</div>
+        <div class="helper">Choose the best match. Critical = immediate safety risk or the line is down.</div>
+
+        <input type="hidden" id="priority" name="priority" value="Med">
+
+        <div class="priority" role="group" aria-label="Priority">
+          <div class="prio-btn" data-level="Low" onclick="setPriority('Low', this)">Low</div>
+          <div class="prio-btn is-selected" data-level="Med" onclick="setPriority('Med', this)">Med</div>
+          <div class="prio-btn" data-level="High" onclick="setPriority('High', this)">High</div>
+          <div class="prio-btn" data-level="Critical" onclick="setPriority('Critical', this)">Critical</div>
+        </div>
+
+        <script>
+          function setPriority(level, el){
+            document.getElementById('priority').value = level;
+            var buttons = el.parentNode.querySelectorAll('.prio-btn');
+            buttons.forEach(function(b){ b.classList.remove('is-selected'); });
+            el.classList.add('is-selected');
+          }
+        </script>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Safety & access</div>
+
+        <div class="grid-2">
+          <div>
+            <label for="safeToApproach">Is it safe to approach?</label>
+            <select id="safeToApproach" name="safeToApproach">
+              <option>Yes</option>
+              <option>No / Not sure</option>
+            </select>
+          </div>
+          <div>
+            <label for="isLineStopped">Is the line stopped?</label>
+            <select id="isLineStopped" name="isLineStopped">
+              <option>No</option>
+              <option>Yes</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="powerState">Equipment state (if applicable)</label>
+          <select id="powerState" name="powerState">
+            <option>Running</option>
+            <option>Stopped</option>
+            <option>Powered down</option>
+            <option>Locked out / tagged out (LOTO)</option>
+            <option>Not applicable / Not sure</option>
+          </select>
+        </div>
+
+        <div class="helper">
+          If there is an immediate hazard, follow site safety procedures and notify your supervisor before submitting a request.
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="section-label">Contact</div>
+
+        <div class="grid-2">
+          <div>
+            <label for="requesterName">Your name</label>
+            <input id="requesterName" name="requesterName" placeholder="Auto-filled in real app">
+          </div>
+          <div>
+            <label for="callback">Best callback (radio/phone)</label>
+            <input id="callback" name="callback" placeholder="Example: Ext 214 / Radio 3 / Cell">
+          </div>
+        </div>
+
+        <div style="margin-top:10px;">
+          <label for="bestTime">Best time to reach you</label>
+          <select id="bestTime" name="bestTime">
+            <option>Now</option>
+            <option>Next break</option>
+            <option>End of shift</option>
+            <option>Any time</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <a href="#" class="btn-sm btn-fill" onclick="return false;">Submit request</a>
+        <a href="#" class="btn-sm btn-outline" onclick="return false;">Add photo (optional)</a>
+      </div>
+
+      <div class="tiny-note">Demo view • Fields and routing vary by site</div>
+    </div>
+  </div>
+</div>
