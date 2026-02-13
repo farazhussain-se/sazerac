@@ -1,0 +1,227 @@
+<div class="pto-widget">
+  <style>
+    .pto-widget {
+      font-family: "Roboto", "Segoe UI", Helvetica, Arial, sans-serif;
+      background-color: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+      border: 1px solid #e0e0e0;
+      padding: 20px;
+      max-width: 380px;
+      margin: 10px auto;
+      color: #333;
+      box-sizing: border-box;
+    }
+
+    .pto-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 18px;
+      border-bottom: 1px solid #f0f0f0;
+      padding-bottom: 14px;
+    }
+
+    .header-title {
+      color: #333333;
+      font-weight: 800;
+      font-size: 1.05rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .subhead {
+      margin-top: 3px;
+      font-size: 0.78rem;
+      color: #666;
+      font-weight: 500;
+    }
+
+    .brand-chip {
+      font-weight: 900;
+      color: #22548f; /* neutral "company blue" */
+      font-size: 0.85rem;
+      letter-spacing: 0.6px;
+      border: 1px solid #d7e3f3;
+      background: #f0f4f9;
+      padding: 6px 8px;
+      border-radius: 14px;
+      line-height: 1;
+    }
+
+    .pto-category { margin-bottom: 22px; }
+
+    .label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-bottom: 8px;
+      gap: 10px;
+    }
+
+    .category-name {
+      font-weight: 800;
+      font-size: 0.82rem;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+    }
+
+    .balance-big {
+      font-weight: 300;
+      font-size: 2rem;
+      color: #333;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
+    .balance-unit {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: 500;
+      margin-left: 4px;
+    }
+
+    .progress-track {
+      background-color: #e6e6e6;
+      height: 6px;
+      width: 100%;
+      border-radius: 3px;
+      overflow: hidden;
+      margin-bottom: 8px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: #22548f; /* neutral blue */
+      border-radius: 3px;
+    }
+
+    .progress-fill.warning { background-color: #fca311; }
+    .progress-fill.danger { background-color: #d32f2f; }
+
+    .meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: #666;
+      margin-top: 4px;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .meta-row span { white-space: nowrap; }
+
+    .helper {
+      font-size: 0.75rem;
+      color: #555;
+      background: #fafbfc;
+      border: 1px solid #eef0f2;
+      padding: 10px;
+      border-radius: 4px;
+      margin-top: 10px;
+      line-height: 1.2rem;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
+    .cta-btn {
+      background-color: #22548f;
+      color: #ffffff;
+      text-align: center;
+      text-decoration: none;
+      padding: 10px 0;
+      border-radius: 6px; /* less "pill", more utilitarian */
+      font-weight: 800;
+      font-size: 0.85rem;
+      transition: background-color 0.2s;
+      border: 1px solid #22548f;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+
+    .cta-btn:hover { background-color: #1a416e; }
+
+    .secondary-btn {
+      background-color: transparent;
+      color: #22548f;
+      border: 1px solid #22548f;
+    }
+
+    .secondary-btn:hover { background-color: #f0f4f9; }
+
+    .as-of-date {
+      text-align: right;
+      font-size: 0.7rem;
+      color: #888;
+      margin-top: 12px;
+      font-style: italic;
+    }
+  </style>
+
+  <div class="pto-header">
+    <div>
+      <div class="header-title">
+        <span>Time Off & Leave</span>
+      </div>
+      <div class="subhead">Use this to plan days off and check what you have available.</div>
+    </div>
+    <div class="brand-chip">SAZERAC</div>
+  </div>
+
+  <!-- Bucket 1: Vacation / PTO -->
+  <div class="pto-category">
+    <div class="label-row">
+      <span class="category-name">Paid time off (PTO)</span>
+      <div>
+        <span class="balance-big">94.5</span>
+        <span class="balance-unit">hrs</span>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" style="width: 65%;"></div>
+    </div>
+    <div class="meta-row">
+      <span>Accrues: 6.46 hrs / pay period</span>
+      <span>Est. year-end: 142 hrs</span>
+    </div>
+  </div>
+
+  <!-- Bucket 2: Sick / Protected time (more frontline-relevant wording) -->
+  <div class="pto-category">
+    <div class="label-row">
+      <span class="category-name">Sick time</span>
+      <div>
+        <span class="balance-big">16.0</span>
+        <span class="balance-unit">hrs</span>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill warning" style="width: 100%;"></div>
+    </div>
+    <div class="meta-row">
+      <span>Use when you’re ill or need a medical day</span>
+      <span>About 2 shifts</span>
+    </div>
+
+    <div class="helper">
+      Tip: If you miss a shift unexpectedly, submit time off here and then fix your punches in Time & Attendance if needed.
+      Keep it simple—your supervisor can confirm the right option for your site.
+    </div>
+  </div>
+
+  <div class="action-row">
+    <a href="#" class="cta-btn">Request time off</a>
+    <a href="#" class="cta-btn secondary-btn">Fix a missed punch</a>
+  </div>
+
+  <div class="as-of-date">
+    Balance as of pay period end: 02/07/2026
+  </div>
+</div>
