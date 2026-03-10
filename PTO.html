@@ -40,7 +40,7 @@
 
     .brand-chip {
       font-weight: 900;
-      color: #22548f; /* neutral "company blue" */
+      color: #003865;
       font-size: 0.85rem;
       letter-spacing: 0.6px;
       border: 1px solid #d7e3f3;
@@ -94,7 +94,7 @@
 
     .progress-fill {
       height: 100%;
-      background-color: #22548f; /* neutral blue */
+      background-color: #003865;
       border-radius: 3px;
     }
 
@@ -113,48 +113,73 @@
 
     .meta-row span { white-space: nowrap; }
 
-    .helper {
-      font-size: 0.75rem;
-      color: #555;
-      background: #fafbfc;
-      border: 1px solid #eef0f2;
-      padding: 10px;
+    /* Upcoming requests section */
+    .upcoming-section {
+      background: #f8fafc;
+      border: 1px solid #e8ecf0;
       border-radius: 4px;
-      margin-top: 10px;
-      line-height: 1.2rem;
+      padding: 12px;
+      margin-bottom: 18px;
     }
 
+    .upcoming-title {
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #666;
+      margin-bottom: 10px;
+    }
+
+    .upcoming-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 7px 0;
+      border-bottom: 1px solid #eef0f2;
+      font-size: 0.82rem;
+    }
+
+    .upcoming-row:last-child { border-bottom: none; }
+
+    .req-date { color: #333; font-weight: 600; }
+    .req-type { color: #666; font-size: 0.76rem; margin-top: 2px; }
+
+    .status-chip {
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .status-approved { background: #e8f5e9; color: #2e7d32; }
+    .status-pending  { background: #fff8e1; color: #f57f17; }
+
+    /* Single CTA */
     .action-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
       margin-top: 18px;
     }
 
     .cta-btn {
-      background-color: #22548f;
+      display: block;
+      background-color: #003865;
       color: #ffffff;
       text-align: center;
       text-decoration: none;
-      padding: 10px 0;
-      border-radius: 6px; /* less "pill", more utilitarian */
+      padding: 11px 0;
+      border-radius: 6px;
       font-weight: 800;
       font-size: 0.85rem;
-      transition: background-color 0.2s;
-      border: 1px solid #22548f;
+      border: none;
       text-transform: uppercase;
       letter-spacing: 0.4px;
+      cursor: pointer;
+      width: 100%;
     }
 
-    .cta-btn:hover { background-color: #1a416e; }
-
-    .secondary-btn {
-      background-color: transparent;
-      color: #22548f;
-      border: 1px solid #22548f;
-    }
-
-    .secondary-btn:hover { background-color: #f0f4f9; }
+    .cta-btn:hover { background-color: #002244; }
 
     .as-of-date {
       text-align: right;
@@ -165,20 +190,19 @@
     }
   </style>
 
+  <!-- Header -->
   <div class="pto-header">
     <div>
-      <div class="header-title">
-        <span>Time Off & Leave</span>
-      </div>
-      <div class="subhead">Use this to plan days off and check what you have available.</div>
+      <div class="header-title">Time Off & Leave</div>
+      <div class="subhead">Balances, accruals and upcoming requests</div>
     </div>
-    <div class="brand-chip">SAZERAC</div>
+    <div class="brand-chip">DAYFORCE</div>
   </div>
 
-  <!-- Bucket 1: Vacation / PTO -->
+  <!-- Bucket 1: PTO -->
   <div class="pto-category">
     <div class="label-row">
-      <span class="category-name">Paid time off (PTO)</span>
+      <span class="category-name">Paid Time Off (PTO)</span>
       <div>
         <span class="balance-big">94.5</span>
         <span class="balance-unit">hrs</span>
@@ -188,15 +212,15 @@
       <div class="progress-fill" style="width: 65%;"></div>
     </div>
     <div class="meta-row">
-      <span>Accrues: 6.46 hrs / pay period</span>
+      <span>Accrues 6.46 hrs / pay period</span>
       <span>Est. year-end: 142 hrs</span>
     </div>
   </div>
 
-  <!-- Bucket 2: Sick / Protected time (more frontline-relevant wording) -->
+  <!-- Bucket 2: Sick Time -->
   <div class="pto-category">
     <div class="label-row">
-      <span class="category-name">Sick time</span>
+      <span class="category-name">Sick Time</span>
       <div>
         <span class="balance-big">16.0</span>
         <span class="balance-unit">hrs</span>
@@ -206,22 +230,55 @@
       <div class="progress-fill warning" style="width: 100%;"></div>
     </div>
     <div class="meta-row">
-      <span>Use when you’re ill or need a medical day</span>
-      <span>About 2 shifts</span>
-    </div>
-
-    <div class="helper">
-      Tip: If you miss a shift unexpectedly, submit time off here and then fix your punches in Time & Attendance if needed.
-      Keep it simple—your supervisor can confirm the right option for your site.
+      <span>Max balance: 16 hrs</span>
+      <span>≈ 2 shifts available</span>
     </div>
   </div>
 
+  <!-- Bucket 3: Bereavement -->
+  <div class="pto-category">
+    <div class="label-row">
+      <span class="category-name">Bereavement</span>
+      <div>
+        <span class="balance-big">24.0</span>
+        <span class="balance-unit">hrs</span>
+      </div>
+    </div>
+    <div class="progress-track">
+      <div class="progress-fill" style="width: 100%;"></div>
+    </div>
+    <div class="meta-row">
+      <span>Per policy: 3 days / occurrence</span>
+      <span>Not accrued</span>
+    </div>
+  </div>
+
+  <!-- Upcoming Requests -->
+  <div class="upcoming-section">
+    <div class="upcoming-title">Upcoming Requests</div>
+
+    <div class="upcoming-row">
+      <div>
+        <div class="req-date">Mar 14 – Mar 15, 2026</div>
+        <div class="req-type">PTO · 16.0 hrs</div>
+      </div>
+      <span class="status-chip status-approved">Approved</span>
+    </div>
+
+    <div class="upcoming-row">
+      <div>
+        <div class="req-date">Mar 28, 2026</div>
+        <div class="req-type">Sick Time · 8.0 hrs</div>
+      </div>
+      <span class="status-chip status-pending">Pending</span>
+    </div>
+  </div>
+
+  <!-- Single Action -->
   <div class="action-row">
-    <a href="#" class="cta-btn">Request time off</a>
-    <a href="#" class="cta-btn secondary-btn">Fix a missed punch</a>
+    <a href="#" class="cta-btn">+ Request Time Off</a>
   </div>
 
-  <div class="as-of-date">
-    Balance as of pay period end: 02/07/2026
-  </div>
+  <div class="as-of-date">Balances as of pay period end: Mar 1, 2026</div>
+
 </div>
