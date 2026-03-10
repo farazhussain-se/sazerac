@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dayforce Payslip</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f0f2f5;
+      min-height: 100vh;
+      padding: 16px;
+    }
+
+    /* Dayforce-style header bar */
+    .df-header {
+      background: linear-gradient(135deg, #003865 0%, #005a9e 100%);
+      color: white;
+      padding: 14px 18px;
+      border-radius: 12px 12px 0 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .df-logo { font-size: 1.1em; font-weight: 700; letter-spacing: 0.5px; }
+    .df-logo span { color: #f9a825; }
+    .df-module { font-size: 0.8em; opacity: 0.85; }
+
+    .card {
+      background: white;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      overflow: hidden;
+      max-width: 420px;
+      margin: 0 auto;
+    }
+
+    /* Employee identity */
+    .emp-bar {
+      background: #f8fafc;
+      border-bottom: 1px solid #e8ecf0;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .emp-avatar {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #003865, #005a9e);
+      color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 1.1em;
+      flex-shrink: 0;
+    }
+    .emp-info .emp-name { font-weight: 700; font-size: 1em; color: #1a1a2e; }
+    .emp-info .emp-meta { font-size: 0.78em; color: #666; margin-top: 2px; }
+
+    /* Pay period banner */
+    .period-banner {
+      background: #003865;
+      color: white;
+      padding: 10px 18px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.82em;
+    }
+    .period-banner .period-label { opacity: 0.8; }
+    .period-banner .period-dates { font-weight: 600; }
+    .period-banner .pay-date { background: #f9a825; color: #003865; padding: 3px 10px; border-radius: 20px; font-weight: 700; font-size: 0.9em; }
+
+    /* Net pay hero */
+    .net-pay {
+      padding: 22px 18px 18px;
+      text-align: center;
+      border-bottom: 1px solid #e8ecf0;
+    }
+    .net-pay-label { font-size: 0.78em; text-transform: uppercase; letter-spacing: 0.8px; color: #888; margin-bottom: 4px; }
+    .net-pay-amount { font-size: 2.6em; font-weight: 800; color: #003865; line-height: 1; }
+    .net-pay-sub { font-size: 0.78em; color: #888; margin-top: 6px; }
+    .ytd-badge { display: inline-block; background: #e8f4f8; color: #005a9e; padding: 4px 12px; border-radius: 20px; font-size: 0.78em; font-weight: 600; margin-top: 8px; }
+
+    /* Hours summary */
+    .hours-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-bottom: 1px solid #e8ecf0;
+    }
+    .hours-cell {
+      padding: 14px 10px;
+      text-align: center;
+      border-right: 1px solid #e8ecf0;
+    }
+    .hours-cell:last-child { border-right: none; }
+    .hours-val { font-size: 1.3em; font-weight: 700; color: #003865; }
+    .hours-lbl { font-size: 0.72em; color: #888; margin-top: 3px; text-transform: uppercase; letter-spacing: 0.3px; }
+
+    /* Section headers */
+    .section-header {
+      background: #f8fafc;
+      padding: 8px 18px;
+      font-size: 0.75em;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #666;
+      border-bottom: 1px solid #e8ecf0;
+      border-top: 1px solid #e8ecf0;
+    }
+
+    /* Earnings / Deductions rows */
+    .line-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 11px 18px;
+      border-bottom: 1px solid #f0f2f5;
+      font-size: 0.88em;
+    }
+    .line-row:last-child { border-bottom: none; }
+    .line-label { color: #333; }
+    .line-meta { font-size: 0.78em; color: #999; margin-top: 2px; }
+    .line-amount { font-weight: 600; color: #1a1a2e; white-space: nowrap; }
+    .line-amount.deduction { color: #c0392b; }
+    .line-amount.ot { color: #e67e22; }
+
+    /* Totals bar */
+    .totals-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 13px 18px;
+      background: #f8fafc;
+      font-weight: 700;
+      font-size: 0.9em;
+      border-top: 2px solid #e8ecf0;
+    }
+    .totals-row .t-label { color: #333; }
+    .totals-row .t-amount { color: #003865; }
+    .totals-row .t-amount.deduction { color: #c0392b; }
+
+    /* Tax summary */
+    .tax-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 14px 18px;
+      border-top: 1px solid #e8ecf0;
+    }
+    .tax-chip {
+      background: #f0f2f5;
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 0.75em;
+    }
+    .tax-chip .tc-label { color: #888; }
+    .tax-chip .tc-val { font-weight: 700; color: #333; margin-top: 1px; }
+
+    /* Footer actions */
+    .actions {
+      display: flex;
+      gap: 10px;
+      padding: 16px 18px;
+      border-top: 1px solid #e8ecf0;
+    }
+    .btn {
+      flex: 1;
+      padding: 11px;
+      border-radius: 8px;
+      border: none;
+      font-size: 0.85em;
+      font-weight: 600;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn-primary { background: #003865; color: white; }
+    .btn-secondary { background: #f0f2f5; color: #333; }
+
+    /* Staffbase widget wrapper note */
+    .sb-note {
+      text-align: center;
+      font-size: 0.7em;
+      color: #bbb;
+      padding: 8px;
+      letter-spacing: 0.3px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card" id="payslip">
+
+  <!-- Dayforce Header -->
+  <div class="df-header">
+    <div>
+      <div class="df-logo">Day<span>force</span></div>
+      <div class="df-module">Pay · My Pay Stubs</div>
+    </div>
+    <div style="font-size:0.78em; opacity:0.7;">Powered by Ceridian</div>
+  </div>
+
+  <!-- Employee Bar -->
+  <div class="emp-bar">
+    <div class="emp-avatar" id="avatarInitials">JD</div>
+    <div class="emp-info">
+      <div class="emp-name" id="empName">John Doe</div>
+      <div class="emp-meta" id="empMeta">Bottling Operator · Buffalo Trace · EMP-4821</div>
+    </div>
+  </div>
+
+  <!-- Pay Period -->
+  <div class="period-banner">
+    <div>
+      <div class="period-label">Pay Period</div>
+      <div class="period-dates">Feb 17 – Mar 1, 2026</div>
+    </div>
+    <div class="pay-date">Paid Mar 6</div>
+  </div>
+
+  <!-- Net Pay Hero -->
+  <div class="net-pay">
+    <div class="net-pay-label">Net Pay</div>
+    <div class="net-pay-amount">$1,247.38</div>
+    <div class="net-pay-sub">Direct Deposit · Checking ••••4291</div>
+    <div class="ytd-badge">YTD Net: $9,843.12</div>
+  </div>
+
+  <!-- Hours Summary -->
+  <div class="hours-grid">
+    <div class="hours-cell">
+      <div class="hours-val">80.0</div>
+      <div class="hours-lbl">Regular Hrs</div>
+    </div>
+    <div class="hours-cell">
+      <div class="hours-val">6.5</div>
+      <div class="hours-lbl">Overtime Hrs</div>
+    </div>
+    <div class="hours-cell">
+      <div class="hours-val">86.5</div>
+      <div class="hours-lbl">Total Hrs</div>
+    </div>
+  </div>
+
+  <!-- Earnings -->
+  <div class="section-header">Earnings</div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">Regular Pay</div>
+      <div class="line-meta">80.0 hrs × $18.50/hr</div>
+    </div>
+    <div class="line-amount">$1,480.00</div>
+  </div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">Overtime Pay</div>
+      <div class="line-meta">6.5 hrs × $27.75/hr (1.5×)</div>
+    </div>
+    <div class="line-amount ot">$180.38</div>
+  </div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">Shift Differential</div>
+      <div class="line-meta">Night shift · 32.0 hrs × $0.75</div>
+    </div>
+    <div class="line-amount">$24.00</div>
+  </div>
+
+  <div class="totals-row">
+    <div class="t-label">Gross Earnings</div>
+    <div class="t-amount">$1,684.38</div>
+  </div>
+
+  <!-- Deductions -->
+  <div class="section-header">Deductions</div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">Federal Income Tax</div>
+      <div class="line-meta">W-4 · Single · 0 allowances</div>
+    </div>
+    <div class="line-amount deduction">−$168.44</div>
+  </div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">KY State Income Tax</div>
+      <div class="line-meta">4.5% flat rate</div>
+    </div>
+    <div class="line-amount deduction">−$75.80</div>
+  </div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">Social Security (OASDI)</div>
+      <div class="line-meta">6.2%</div>
+    </div>
+    <div class="line-amount deduction">−$104.43</div>
+  </div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">Medicare</div>
+      <div class="line-meta">1.45%</div>
+    </div>
+    <div class="line-amount deduction">−$24.42</div>
+  </div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">Medical Insurance</div>
+      <div class="line-meta">BCBS PPO · Employee + Family</div>
+    </div>
+    <div class="line-amount deduction">−$48.50</div>
+  </div>
+
+  <div class="line-row">
+    <div>
+      <div class="line-label">Union Dues</div>
+      <div class="line-meta">UFCW Local 10D</div>
+    </div>
+    <div class="line-amount deduction">−$15.41</div>
+  </div>
+
+  <div class="totals-row">
+    <div class="t-label">Total Deductions</div>
+    <div class="t-amount deduction">−$437.00</div>
+  </div>
+
+  <!-- Tax Chips -->
+  <div class="tax-chips">
+    <div class="tax-chip">
+      <div class="tc-label">Fed Tax YTD</div>
+      <div class="tc-val">$1,331.22</div>
+    </div>
+    <div class="tax-chip">
+      <div class="tc-label">SS YTD</div>
+      <div class="tc-val">$825.04</div>
+    </div>
+    <div class="tax-chip">
+      <div class="tc-label">Medicare YTD</div>
+      <div class="tc-val">$192.96</div>
+    </div>
+    <div class="tax-chip">
+      <div class="tc-label">State Tax YTD</div>
+      <div class="tc-val">$598.88</div>
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="actions">
+    <button class="btn btn-primary">⬇ Download PDF</button>
+    <button class="btn btn-secondary">📋 Pay History</button>
+  </div>
+
+  <div class="sb-note">Powered by Dayforce · Sazerac Company Payroll</div>
+
+</div>
+
+<script>
+  // Staffbase getUserInformation() integration - same pattern as badge widget
+  function renderPayslip(user) {
+    if (!user) return;
+
+    const first = user.firstName || '';
+    const last = user.lastName || '';
+    const initials = `${first.charAt(0)}${last.charAt(0)}`.toUpperCase() || 'JD';
+    const fullName = `${first} ${last}`.trim() || 'John Doe';
+
+    document.getElementById('avatarInitials').textContent = initials;
+    document.getElementById('empName').textContent = fullName;
+
+    const position = user.position || 'Bottling Operator';
+    const location = user.location || 'Buffalo Trace';
+    const id = user.externalId || user.id || 'EMP-4821';
+    document.getElementById('empMeta').textContent = `${position} · ${location} · ${id}`;
+  }
+
+  // Staffbase Custom Widget API
+  if (window.staffbase && window.staffbase.widget) {
+    window.staffbase.widget.getUserInformation()
+      .then(renderPayslip)
+      .catch(function(e) { console.warn('Staffbase user info unavailable', e); });
+  }
+
+  document.addEventListener('staffbaseReady', function(e) {
+    e.detail.getUserInformation().then(renderPayslip);
+  });
+</scr
