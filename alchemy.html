@@ -47,34 +47,12 @@
 
     .sidebar-icon:hover { background: #3a4f64; color: #fff; }
     .sidebar-icon.active { background: #f5c518; color: #2b3a4b; }
-
-    .sidebar-divider {
-      width: 28px;
-      height: 1px;
-      background: #3a4f64;
-      margin: 4px 0;
-    }
+    .sidebar-divider { width: 28px; height: 1px; background: #3a4f64; margin: 4px 0; }
 
     /* ── Main ── */
-    .main {
-      flex: 1;
-      background: #f0f2f5;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .top-bar {
-      height: 5px;
-      background: linear-gradient(90deg, #f5c518, #e6b800);
-      flex-shrink: 0;
-    }
-
-    .content {
-      flex: 1;
-      overflow-y: auto;
-    }
-
+    .main { flex: 1; background: #f0f2f5; display: flex; flex-direction: column; overflow: hidden; }
+    .top-bar { height: 5px; background: linear-gradient(90deg, #f5c518, #e6b800); flex-shrink: 0; }
+    .content { flex: 1; overflow-y: auto; }
     .content::-webkit-scrollbar { width: 4px; }
     .content::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 2px; }
 
@@ -82,9 +60,28 @@
     .view { display: none; }
     .view.active { display: block; }
 
-    /* ══════════════════════════
-       HOME
-    ══════════════════════════ */
+    /* ── Shared header ── */
+    .view-header {
+      background: #2b3a4b;
+      padding: 12px 16px 10px;
+    }
+
+    .view-header-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 4px; }
+    .view-header-title { font-size: 13px; font-weight: 700; color: white; }
+    .view-header-sub { font-size: 11px; color: #8fa3b8; }
+    .view-header-accent { font-size: 11px; color: #f5c518; font-weight: 600; }
+
+    .back-btn {
+      background: transparent;
+      border: none;
+      color: #f5c518;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    /* ── HOME ── */
     .home-content { padding: 24px 16px 20px; }
 
     .greeting {
@@ -105,6 +102,9 @@
       cursor: pointer;
       box-shadow: 0 1px 4px rgba(0,0,0,0.07);
       transition: transform 0.15s, box-shadow 0.15s;
+      border: none;
+      width: 100%;
+      text-align: left;
     }
 
     .menu-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.12); }
@@ -120,46 +120,16 @@
       flex-shrink: 0;
     }
 
-    .card-icon-wrap.green { background: #d4edda; }
-    .card-icon-wrap.blue  { background: #cce5f7; }
+    .card-icon-wrap.green  { background: #d4edda; }
+    .card-icon-wrap.blue   { background: #cce5f7; }
 
     .card-text { flex: 1; padding: 0 12px; }
     .card-title { font-size: 14px; font-weight: 700; color: #1a2533; margin-bottom: 2px; }
     .card-sub   { font-size: 12px; color: #6b7e92; }
     .card-arrow { font-size: 20px; color: #3b82f6; padding-right: 14px; }
 
-    /* ══════════════════════════
-       JOB QUALIFICATIONS LIST
-    ══════════════════════════ */
-    .role-header {
-      background: #2b3a4b;
-      padding: 12px 16px 10px;
-    }
-
-    .role-nav {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 4px;
-    }
-
-    .back-btn {
-      background: transparent;
-      border: none;
-      color: #f5c518;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      padding: 0;
-    }
-
-    .role-header-name { font-size: 13px; font-weight: 700; color: white; }
-    .role-header-sub  { font-size: 11px; color: #8fa3b8; }
-
-    .role-cards-wrap { padding: 14px 14px 20px; }
+    /* ── Role list ── */
+    .cards-wrap { padding: 14px 14px 20px; }
 
     .role-card {
       background: white;
@@ -169,13 +139,16 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.07);
       cursor: pointer;
       transition: box-shadow 0.15s;
+      border: none;
+      width: 100%;
+      text-align: left;
     }
 
     .role-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 
     .role-card-top {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: space-between;
       margin-bottom: 8px;
     }
@@ -183,57 +156,27 @@
     .role-card-name { font-size: 14px; font-weight: 700; color: #1a2533; }
     .role-card-dept { font-size: 11px; color: #6b7e92; margin-top: 2px; }
 
+    /* ── Badges ── */
     .badge {
       display: inline-block;
       padding: 3px 9px;
       border-radius: 20px;
       font-size: 11px;
       font-weight: 700;
+      white-space: nowrap;
     }
 
     .badge.green  { background: #d4edda; color: #1a7a3c; }
     .badge.red    { background: #fde8e8; color: #b91c1c; }
     .badge.yellow { background: #fef3c7; color: #92620a; }
+    .badge.blue   { background: #dbeafe; color: #1d4ed8; }
 
-    .progress-bar {
-      height: 6px;
-      background: #e5e7eb;
-      border-radius: 3px;
-      overflow: hidden;
-    }
+    /* ── Progress ── */
+    .progress-bar { height: 6px; background: #e5e7eb; border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+    .progress-label { display: flex; justify-content: space-between; font-size: 11px; color: #6b7e92; margin-top: 5px; }
 
-    .progress-fill {
-      height: 100%;
-      border-radius: 3px;
-      transition: width 0.6s ease;
-    }
-
-    .progress-label {
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px;
-      color: #6b7e92;
-      margin-top: 5px;
-    }
-
-    /* ══════════════════════════
-       QUALIFICATION DETAIL
-    ══════════════════════════ */
-    .qual-header {
-      background: #2b3a4b;
-      padding: 12px 16px 10px;
-    }
-
-    .qual-header-nav {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 2px;
-    }
-
-    .qual-header-name { font-size: 13px; font-weight: 700; color: white; }
-    .qual-header-role { font-size: 11px; color: #f5c518; font-weight: 600; }
-
+    /* ── Qual detail ── */
     .qual-status-bar {
       background: white;
       border-bottom: 1px solid #eee;
@@ -243,11 +186,7 @@
       justify-content: space-between;
     }
 
-    .qual-status-left {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .qual-status-left { display: flex; align-items: center; gap: 8px; }
 
     .status-icon {
       width: 32px;
@@ -260,9 +199,9 @@
       font-size: 14px;
     }
 
-    .status-label    { font-size: 13px; font-weight: 700; color: #1a2533; }
-    .not-qualified   { font-size: 11px; color: #b91c1c; font-weight: 600; }
-    .qualified-text  { font-size: 11px; color: #1a7a3c; font-weight: 600; }
+    .status-label   { font-size: 13px; font-weight: 700; color: #1a2533; }
+    .not-qualified  { font-size: 11px; color: #b91c1c; font-weight: 600; }
+    .qualified-text { font-size: 11px; color: #1a7a3c; font-weight: 600; }
 
     .qual-progress-section {
       background: white;
@@ -272,18 +211,12 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.07);
     }
 
-    .qual-progress-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      margin-bottom: 4px;
-    }
-
+    .qual-progress-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 4px; }
     .qual-progress-title { font-size: 14px; font-weight: 700; color: #1a2533; }
     .qual-progress-count { font-size: 14px; font-weight: 700; color: #1a2533; }
     .qual-progress-sub   { font-size: 11px; color: #6b7e92; margin-bottom: 10px; }
 
-    .qual-courses { padding: 0 14px 14px; }
+    .qual-courses { padding: 8px 14px 20px; }
 
     .qual-course-item {
       background: white;
@@ -314,35 +247,21 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1px;
-      min-width: 44px;
+      gap: 2px;
+      min-width: 48px;
       transition: opacity 0.15s;
     }
 
     .qual-action-btn:hover { opacity: 0.8; }
-    .qual-action-btn .btn-icon { font-size: 16px; }
-    .qual-action-btn .btn-text { font-size: 9px; line-height: 1.1; text-align: center; }
+    .qual-action-btn .btn-icon { font-size: 15px; }
+    .qual-action-btn .btn-text { font-size: 9px; line-height: 1.2; text-align: center; }
 
     .btn-done    { background: #d4edda; color: #1a7a3c; }
     .btn-play    { background: #1d4ed8; color: white; }
     .btn-obs     { background: #0ea5e9; color: white; }
     .btn-expired { background: #fde8e8; color: #b91c1c; }
 
-    /* ══════════════════════════
-       COURSES VIEW
-    ══════════════════════════ */
-    .sub-header {
-      background: #2b3a4b;
-      padding: 12px 16px 10px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .sub-title { font-size: 14px; font-weight: 700; color: white; }
-
-    .courses-wrap { padding: 12px 14px 20px; }
-
+    /* ── Courses view ── */
     .stats-row { display: flex; gap: 8px; margin-bottom: 12px; }
 
     .stat-card {
@@ -392,11 +311,13 @@
       cursor: pointer;
       white-space: nowrap;
       transition: opacity 0.15s;
+      flex-shrink: 0;
     }
 
     .btn-sm:hover { opacity: 0.8; }
     .btn-blue  { background: #1d4ed8; color: white; }
     .btn-gray  { background: #e5e7eb; color: #374151; }
+    .btn-red   { background: #ef4444; color: white; }
 
     /* ── Toast ── */
     .toast {
@@ -423,17 +344,16 @@
 
 <div class="app">
 
-  <!-- ── Sidebar ── -->
+  <!-- Sidebar -->
   <nav class="sidebar">
-    <div class="sidebar-icon active" title="Home"    onclick="navigate('home')">🏠</div>
-    <div class="sidebar-icon"        title="My Quals" onclick="navigate('jobs')">🛡️</div>
-    <div class="sidebar-icon"        title="Courses"  onclick="navigate('courses')">📘</div>
+    <div class="sidebar-icon active" id="sbi-home"    onclick="showView('home')">🏠</div>
+    <div class="sidebar-icon"        id="sbi-jobs"    onclick="showView('jobs')">🛡️</div>
+    <div class="sidebar-icon"        id="sbi-courses" onclick="showView('courses')">📘</div>
     <div class="sidebar-divider"></div>
-    <div class="sidebar-icon"        title="Settings" onclick="showToast('Settings coming soon')">⚙️</div>
-    <div class="sidebar-icon"        title="Sync"     onclick="showToast('Syncing…')">🔄</div>
+    <div class="sidebar-icon" onclick="showToast('Settings coming soon')">⚙️</div>
+    <div class="sidebar-icon" onclick="showToast('Syncing…')">🔄</div>
   </nav>
 
-  <!-- ── Main ── -->
   <div class="main">
     <div class="top-bar"></div>
     <div class="content">
@@ -443,40 +363,38 @@
         <div class="home-content">
           <div class="greeting" id="greeting">Hi there, what would you like to do?</div>
 
-          <div class="menu-card" onclick="navigate('jobs')">
+          <button class="menu-card" onclick="showView('jobs')">
             <div class="card-icon-wrap green">🛡️</div>
             <div class="card-text">
               <div class="card-title">Job qualifications</div>
               <div class="card-sub">My assigned courses</div>
             </div>
             <div class="card-arrow">›</div>
-          </div>
+          </button>
 
-          <div class="menu-card" onclick="navigate('courses')">
+          <button class="menu-card" onclick="showView('courses')">
             <div class="card-icon-wrap blue">📘</div>
             <div class="card-text">
               <div class="card-title">Courses</div>
               <div class="card-sub">Preview courses and download for offline use</div>
             </div>
             <div class="card-arrow">›</div>
-          </div>
-
+          </button>
         </div>
       </div>
 
-      <!-- ══ MY QUALIFICATIONS LIST ══ -->
+      <!-- ══ QUALIFICATIONS LIST ══ -->
       <div id="view-jobs" class="view">
-        <div class="role-header">
-          <div class="role-nav">
-            <button class="back-btn" onclick="navigate('home')">‹ Home</button>
+        <div class="view-header">
+          <div class="view-header-nav">
+            <button class="back-btn" onclick="showView('home')">‹ Home</button>
           </div>
-          <div class="role-header-name" id="jobs-header-name">My Qualifications</div>
-          <div class="role-header-sub">Sazerac — Louisville Distillery</div>
+          <div class="view-header-title" id="jobs-header-name">My Qualifications</div>
+          <div class="view-header-sub">Sazerac — Louisville Distillery</div>
         </div>
 
-        <div class="role-cards-wrap">
-
-          <div class="role-card" onclick="navigate('qual-detail', 'plant-op')">
+        <div class="cards-wrap">
+          <button class="role-card" onclick="showQualDetail('plant-op')">
             <div class="role-card-top">
               <div>
                 <div class="role-card-name">Plant Operator</div>
@@ -484,5 +402,353 @@
               </div>
               <span class="badge yellow">In Progress</span>
             </div>
-            <div class="progress-bar">
-              <div class="progress-fill" style="w
+            <div class="progress-bar"><div class="progress-fill" style="width:33%;background:#f5c518"></div></div>
+            <div class="progress-label"><span>2 of 6 complete</span><span>Not yet qualified</span></div>
+          </button>
+
+          <button class="role-card" onclick="showQualDetail('safety')">
+            <div class="role-card-top">
+              <div>
+                <div class="role-card-name">Safety Compliance</div>
+                <div class="role-card-dept">EHS · All Facilities</div>
+              </div>
+              <span class="badge green">Qualified</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:100%;background:#10b981"></div></div>
+            <div class="progress-label"><span>4 of 4 complete</span><span>Expires Dec 2026</span></div>
+          </button>
+
+          <button class="role-card" onclick="showQualDetail('bottling')">
+            <div class="role-card-top">
+              <div>
+                <div class="role-card-name">Bottling Line Specialist</div>
+                <div class="role-card-dept">Production · Bardstown</div>
+              </div>
+              <span class="badge red">Gap</span>
+            </div>
+            <div class="progress-bar"><div class="progress-fill" style="width:20%;background:#ef4444"></div></div>
+            <div class="progress-label"><span>1 of 5 complete</span><span>Action required</span></div>
+          </button>
+        </div>
+      </div>
+
+      <!-- ══ QUALIFICATION DETAIL ══ -->
+      <div id="view-qual-detail" class="view">
+        <div class="view-header">
+          <div class="view-header-nav">
+            <button class="back-btn" onclick="showView('jobs')">‹ Back</button>
+            <span id="qual-emp-name" class="view-header-title"></span>
+          </div>
+          <div id="qual-role-label" class="view-header-accent"></div>
+        </div>
+
+        <div class="qual-status-bar">
+          <div class="qual-status-left">
+            <div class="status-icon" id="qual-status-icon">⏳</div>
+            <div class="status-label" id="qual-status-label">In progress</div>
+          </div>
+          <div id="qual-qualified-label" class="not-qualified">Not yet qualified</div>
+        </div>
+
+        <div class="qual-progress-section">
+          <div class="qual-progress-top">
+            <span class="qual-progress-title">Qualification progress</span>
+            <span class="qual-progress-count" id="qual-count"></span>
+          </div>
+          <div class="qual-progress-sub" id="qual-progress-sub"></div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="qual-progress-bar" style="width:0%"></div>
+          </div>
+        </div>
+
+        <div class="qual-courses" id="qual-courses-list"></div>
+      </div>
+
+      <!-- ══ COURSES ══ -->
+      <div id="view-courses" class="view">
+        <div class="view-header">
+          <div class="view-header-nav">
+            <button class="back-btn" onclick="showView('home')">‹ Home</button>
+          </div>
+          <div class="view-header-title">My Courses</div>
+          <div class="view-header-sub">All assigned training</div>
+        </div>
+
+        <div class="cards-wrap">
+          <div class="stats-row">
+            <div class="stat-card"><div class="stat-number">18</div><div class="stat-label">Assigned</div></div>
+            <div class="stat-card"><div class="stat-number">6</div><div class="stat-label">In Progress</div></div>
+            <div class="stat-card"><div class="stat-number">2</div><div class="stat-label">Overdue</div></div>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb" style="background:#d4edda">🦺</div>
+            <div class="course-info">
+              <div class="course-name">LOTO Procedures</div>
+              <div class="course-meta">EHS · 45 min</div>
+              <div class="progress-bar" style="margin-top:5px"><div class="progress-fill" style="width:100%;background:#10b981"></div></div>
+            </div>
+            <button class="btn-sm btn-gray" onclick="showToast('LOTO Procedures already completed!')">✓ Done</button>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb" style="background:#cce5f7">🥃</div>
+            <div class="course-info">
+              <div class="course-name">Distillation Fundamentals</div>
+              <div class="course-meta">Production · 90 min · 60% done</div>
+              <div class="progress-bar" style="margin-top:5px"><div class="progress-fill" style="width:60%"></div></div>
+            </div>
+            <button class="btn-sm btn-blue" onclick="showToast('Launching Distillation Fundamentals…')">▶ Play</button>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb" style="background:#fde8c4">🔧</div>
+            <div class="course-info">
+              <div class="course-name">Forklift Certification</div>
+              <div class="course-meta">Warehouse · 60 min · Not started</div>
+              <div class="progress-bar" style="margin-top:5px"><div class="progress-fill" style="width:0%"></div></div>
+            </div>
+            <button class="btn-sm btn-blue" onclick="showToast('Launching Forklift Certification…')">▶ Play</button>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb" style="background:#fce4ec">🔥</div>
+            <div class="course-info">
+              <div class="course-name">Fire Safety &amp; Evacuation</div>
+              <div class="course-meta" style="color:#b91c1c">EHS · 20 min · ⚠ Overdue</div>
+              <div class="progress-bar" style="margin-top:5px"><div class="progress-fill" style="width:0%"></div></div>
+            </div>
+            <button class="btn-sm btn-red" onclick="showToast('Launching Fire Safety — overdue!')">Urgent</button>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb" style="background:#d9d8f0">🧪</div>
+            <div class="course-info">
+              <div class="course-name">GMP Essentials</div>
+              <div class="course-meta">Quality · 30 min · 25% done</div>
+              <div class="progress-bar" style="margin-top:5px"><div class="progress-fill" style="width:25%"></div></div>
+            </div>
+            <button class="btn-sm btn-blue" onclick="showToast('Launching GMP Essentials…')">▶ Play</button>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb" style="background:#d4edda">🛢️</div>
+            <div class="course-info">
+              <div class="course-name">Barrel Storage & Warehousing</div>
+              <div class="course-meta">Production · 45 min · Not started</div>
+              <div class="progress-bar" style="margin-top:5px"><div class="progress-fill" style="width:0%"></div></div>
+            </div>
+            <button class="btn-sm btn-blue" onclick="showToast('Launching Barrel Storage…')">▶ Play</button>
+          </div>
+
+          <div class="course-card">
+            <div class="course-thumb" style="background:#fef3c7">📋</div>
+            <div class="course-info">
+              <div class="course-name">TTB Compliance Basics</div>
+              <div class="course-meta">Regulatory · 35 min · Not started</div>
+              <div class="progress-bar" style="margin-top:5px"><div class="progress-fill" style="width:0%"></div></div>
+            </div>
+            <button class="btn-sm btn-blue" onclick="showToast('Launching TTB Compliance…')">▶ Play</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── Qual data ──
+  const qualData = {
+    'plant-op': {
+      title: 'Plant Operator',
+      total: 6, complete: 2,
+      expiry: 'Completion will qualify employee without expiration',
+      statusLabel: 'In progress',
+      qualified: false,
+      courses: [
+        { name: 'Lockout/Tagout Procedures',   type: 'Course',      status: 'done'    },
+        { name: 'Hazardous Materials Handling', type: 'Course',      status: 'done'    },
+        { name: 'Barrel Filling Safety',        type: 'Course',      status: 'play'    },
+        { name: 'Distillation Fundamentals',    type: 'Course',      status: 'play'    },
+        { name: 'Still Operation Protocols',    type: 'Course',      status: 'play'    },
+        { name: 'Plant Safety Evaluation',      type: 'Observation', status: 'observe' }
+      ]
+    },
+    'safety': {
+      title: 'Safety Compliance',
+      total: 4, complete: 4,
+      expiry: 'Qualification expires December 2026',
+      statusLabel: 'Qualified',
+      qualified: true,
+      courses: [
+        { name: 'Workplace Safety Essentials',  type: 'Course',      status: 'done' },
+        { name: 'Fire Safety & Evacuation',     type: 'Course',      status: 'done' },
+        { name: 'PPE Requirements',             type: 'Course',      status: 'done' },
+        { name: 'EHS Site Evaluation',          type: 'Observation', status: 'done' }
+      ]
+    },
+    'bottling': {
+      title: 'Bottling Line Specialist',
+      total: 5, complete: 1,
+      expiry: 'Completion will qualify employee without expiration',
+      statusLabel: 'In progress',
+      qualified: false,
+      courses: [
+        { name: 'Line Equipment Overview',     type: 'Course',      status: 'done'    },
+        { name: 'Glass & Packaging Standards', type: 'Course',      status: 'play'    },
+        { name: 'Label Compliance',            type: 'Course',      status: 'play'    },
+        { name: 'QC Sampling Procedures',      type: 'Course',      status: 'play'    },
+        { name: 'Bottling Line Observation',   type: 'Observation', status: 'observe' }
+      ]
+    }
+  };
+
+  let currentEmployeeName = '';
+
+  // ── Show any top-level view ──
+  function showView(viewId) {
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-' + viewId).classList.add('active');
+
+    // Sidebar highlight
+    document.querySelectorAll('.sidebar-icon[id^="sbi-"]').forEach(i => i.classList.remove('active'));
+    const sbi = document.getElementById('sbi-' + viewId);
+    if (sbi) sbi.classList.add('active');
+
+    notifyHeight();
+  }
+
+  // ── Open qual detail ──
+  function showQualDetail(key) {
+    const data = qualData[key];
+    if (!data) return;
+
+    // Header
+    document.getElementById('qual-emp-name').textContent = currentEmployeeName || '';
+    document.getElementById('qual-role-label').textContent = data.title;
+
+    // Status
+    const icon    = document.getElementById('qual-status-icon');
+    const label   = document.getElementById('qual-status-label');
+    const qualLbl = document.getElementById('qual-qualified-label');
+
+    if (data.qualified) {
+      icon.textContent  = '✅';
+      label.textContent = 'Qualified';
+      qualLbl.textContent = 'Qualified ✓';
+      qualLbl.className = 'qualified-text';
+    } else {
+      icon.textContent  = '⏳';
+      label.textContent = data.statusLabel;
+      qualLbl.textContent = 'Not yet qualified';
+      qualLbl.className = 'not-qualified';
+    }
+
+    // Progress
+    document.getElementById('qual-count').textContent = data.complete + ' of ' + data.total;
+    document.getElementById('qual-progress-sub').textContent = data.expiry;
+
+    const pct = Math.round((data.complete / data.total) * 100);
+    const bar = document.getElementById('qual-progress-bar');
+    bar.style.width = pct + '%';
+    bar.style.background = data.qualified ? '#10b981' : pct < 40 ? '#ef4444' : '#f5c518';
+
+    // Course rows
+    const list = document.getElementById('qual-courses-list');
+    list.innerHTML = '';
+
+    data.courses.forEach(function(c) {
+      var btnClass, btnIcon, btnText, msg;
+
+      if (c.status === 'done') {
+        btnClass = 'btn-done'; btnIcon = '✅'; btnText = 'Done';
+        msg = c.name + ' is already completed';
+      } else if (c.status === 'play') {
+        btnClass = 'btn-play'; btnIcon = '▶'; btnText = 'Play';
+        msg = 'Launching ' + c.name + '…';
+      } else if (c.status === 'observe') {
+        btnClass = 'btn-obs'; btnIcon = '📋'; btnText = 'Coach';
+        msg = 'Opening Coach for ' + c.name + '…';
+      } else {
+        btnClass = 'btn-expired'; btnIcon = '⚠'; btnText = 'Expired';
+        msg = c.name + ' has expired — re-enroll required';
+      }
+
+      var item = document.createElement('div');
+      item.className = 'qual-course-item';
+      item.innerHTML =
+        '<div class="qual-course-info">' +
+          '<div class="qual-course-name">' + c.name + '</div>' +
+          '<div class="qual-course-type">' + c.type + '</div>' +
+        '</div>' +
+        '<button class="qual-action-btn ' + btnClass + '">' +
+          '<span class="btn-icon">' + btnIcon + '</span>' +
+          '<span class="btn-text">' + btnText + '</span>' +
+        '</button>';
+
+      item.querySelector('button').addEventListener('click', function() {
+        showToast(msg);
+      });
+
+      list.appendChild(item);
+    });
+
+    // Switch to detail view
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-qual-detail').classList.add('active');
+
+    // Remove sidebar highlight since detail is a sub-view
+    document.querySelectorAll('.sidebar-icon[id^="sbi-"]').forEach(i => i.classList.remove('active'));
+    document.getElementById('sbi-jobs').classList.add('active');
+
+    notifyHeight();
+  }
+
+  // ── Greeting ──
+  function setGreeting(name) {
+    document.getElementById('greeting').textContent =
+      name ? 'Hi ' + name + ', what would you like to do?' : 'Hi there, what would you like to do?';
+  }
+
+  // ── Init ──
+  function init() {
+    var userId = document.body.dataset.userId || null;
+    if (userId) {
+      fetch('https://your-sazerac-api.com/user/' + encodeURIComponent(userId))
+        .then(function(r) { return r.json(); })
+        .then(function(d) {
+          var fname = (d.firstName || '').trim();
+          var lname = (d.lastName  || '').trim();
+          setGreeting(fname || null);
+          currentEmployeeName = lname ? lname + ', ' + fname : fname;
+          document.getElementById('jobs-header-name').textContent =
+            fname ? fname + "'s Qualifications" : 'My Qualifications';
+        })
+        .catch(function() { setGreeting(null); });
+    }
+  }
+
+  // ── Toast ──
+  var toastTimer;
+  function showToast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function() { t.classList.remove('show'); }, 2400);
+  }
+
+  // ── Height sync ──
+  function notifyHeight() {
+    if (parent !== window) parent.postMessage({ height: document.body.scrollHeight }, '*');
+  }
+
+  new ResizeObserver(notifyHeight).observe(document.body);
+  document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
