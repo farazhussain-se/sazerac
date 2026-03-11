@@ -15,7 +15,16 @@
       background: linear-gradient(135deg, #003865 0%, #005a9e 100%);
       color: #fff;
       padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
     }
+
+    .widget-header:hover { filter: brightness(1.08); }
+
+    .header-text { flex: 1; }
 
     .brand-sub {
       font-size: 0.7rem;
@@ -31,6 +40,40 @@
       margin-top: 2px;
     }
 
+    .collapse-toggle {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.3s ease;
+      flex-shrink: 0;
+      margin-left: 10px;
+      padding: 0;
+    }
+
+    .collapse-toggle:hover { background: rgba(255,255,255,0.28); }
+    .collapse-toggle.collapsed { transform: rotate(-180deg); }
+
+    /* Collapsible body */
+    .widget-body {
+      overflow: hidden;
+      max-height: 1000px;
+      transition: max-height 0.35s ease, opacity 0.25s ease;
+      opacity: 1;
+    }
+
+    .widget-body.collapsed {
+      max-height: 0;
+      opacity: 0;
+    }
+
     .scroll-container { padding: 14px; background: #f5f7fb; }
 
     .period-label {
@@ -44,7 +87,6 @@
       border-bottom: 1px solid #d1d9e6;
     }
 
-    /* Flat card list replacing scroll wheel */
     .shift-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
 
     .shift-card {
@@ -65,9 +107,9 @@
       box-shadow: 0 2px 8px rgba(0,56,101,0.12);
     }
 
-    .shift-card.night.active  { border-left-color: #3949ab; }
-    .shift-card.day.active    { border-left-color: #b28900; }
-    .shift-card.standby.active{ border-left-color: #546e7a; }
+    .shift-card.night.active   { border-left-color: #3949ab; }
+    .shift-card.day.active     { border-left-color: #b28900; }
+    .shift-card.standby.active { border-left-color: #546e7a; }
 
     .sc-left { flex: 1; }
     .sc-date { font-weight: 700; font-size: 0.85rem; color: #222; }
@@ -83,11 +125,10 @@
       white-space: nowrap;
     }
 
-    .night  .shift-badge { background: #3949ab; color: #fff; }
-    .day    .shift-badge { background: #b28900; color: #fff; }
+    .night   .shift-badge { background: #3949ab; color: #fff; }
+    .day     .shift-badge { background: #b28900; color: #fff; }
     .standby .shift-badge { background: #546e7a; color: #fff; }
 
-    /* Detail panel */
     .shift-details {
       background: #fff;
       border: 1px solid #d1d9e6;
@@ -150,91 +191,120 @@
     .btn-outline { border: 1px solid #003865; color: #003865 !important; background: transparent; }
   </style>
 
-  <div class="widget-header">
-    <div class="brand-sub">Sazerac · Shift & Time</div>
-    <div class="next-shift-banner" id="currentShiftBanner">Select a shift</div>
+  <!-- Header is now fully clickable to collapse -->
+  <div class="widget-header" id="shiftWidgetHeader">
+    <div class="header-text">
+      <div class="brand-sub">Sazerac · Shift &amp; Time</div>
+      <div class="next-shift-banner" id="currentShiftBanner">Select a shift</div>
+    </div>
+    <button class="collapse-toggle" id="collapseToggle" aria-label="Toggle widget" title="Collapse">▾</button>
   </div>
 
-  <div class="scroll-container">
-    <div class="period-label">Pay period: March 08 – March 21, 2026</div>
+  <!-- Everything below header is collapsible -->
+  <div class="widget-body" id="widgetBody">
+    <div class="scroll-container">
+      <div class="period-label">Pay period: March 08 – March 21, 2026</div>
 
-    <!-- Flat shift cards - no scroll wheel -->
-    <div class="shift-list" id="shiftList">
-      <div class="shift-card night active" data-shift="0">
-        <div class="sc-left">
-          <div class="sc-date">Wednesday, March 11</div>
-          <div class="sc-time">19:00 – 07:00</div>
+      <div class="shift-list" id="shiftList">
+        <div class="shift-card night active" data-shift="0">
+          <div class="sc-left">
+            <div class="sc-date">Wednesday, March 11</div>
+            <div class="sc-time">19:00 – 07:00</div>
+          </div>
+          <span class="shift-badge">Night</span>
         </div>
-        <span class="shift-badge">Night</span>
+
+        <div class="shift-card day" data-shift="1">
+          <div class="sc-left">
+            <div class="sc-date">Friday, March 13</div>
+            <div class="sc-time">07:00 – 19:00</div>
+          </div>
+          <span class="shift-badge">Day</span>
+        </div>
+
+        <div class="shift-card standby" data-shift="2">
+          <div class="sc-left">
+            <div class="sc-date">Sunday, March 15</div>
+            <div class="sc-time">07:00 – 19:00</div>
+          </div>
+          <span class="shift-badge">Standby</span>
+        </div>
+
+        <div class="shift-card night" data-shift="3">
+          <div class="sc-left">
+            <div class="sc-date">Monday, March 16</div>
+            <div class="sc-time">19:00 – 07:00</div>
+          </div>
+          <span class="shift-badge">Night</span>
+        </div>
       </div>
 
-      <div class="shift-card day" data-shift="1">
-        <div class="sc-left">
-          <div class="sc-date">Friday, March 13</div>
-          <div class="sc-time">07:00 – 19:00</div>
-        </div>
-        <span class="shift-badge">Day</span>
+      <div class="shift-details" id="shiftDetails"></div>
+
+      <div class="action-row">
+        <a href="#" class="btn-sm btn-fill">Clock In / Out</a>
+        <a href="#" class="btn-sm btn-outline">My Timecard</a>
       </div>
-
-      <div class="shift-card standby" data-shift="2">
-        <div class="sc-left">
-          <div class="sc-date">Sunday, March 15</div>
-          <div class="sc-time">07:00 – 19:00</div>
-        </div>
-        <span class="shift-badge">Standby</span>
+      <div class="action-row" style="margin-top:8px;">
+        <a href="#" class="btn-sm btn-fill">Report Issue</a>
+        <a href="#" class="btn-sm btn-outline">Safety &amp; Quality</a>
       </div>
-
-      <div class="shift-card night" data-shift="3">
-        <div class="sc-left">
-          <div class="sc-date">Monday, March 16</div>
-          <div class="sc-time">19:00 – 07:00</div>
-        </div>
-        <span class="shift-badge">Night</span>
-      </div>
-    </div>
-
-    <!-- Detail Panel -->
-    <div class="shift-details" id="shiftDetails"></div>
-
-    <div class="action-row">
-      <a href="#" class="btn-sm btn-fill">Clock In / Out</a>
-      <a href="#" class="btn-sm btn-outline">My Timecard</a>
-    </div>
-    <div class="action-row" style="margin-top:8px;">
-      <a href="#" class="btn-sm btn-fill">Report Issue</a>
-      <a href="#" class="btn-sm btn-outline">Safety & Quality</a>
     </div>
   </div>
 
   <script>
     (function () {
       const shifts = [
-        { date: "Wednesday, March 11", time: "19:00 – 07:00", area: "Bottling · Line 3", role: "Packaging Operator", status: "Not clocked in", tag: "Night shift premium applies", tagClass: "" },
-        { date: "Friday, March 13",    time: "07:00 – 19:00", area: "Warehouse · Shipping", role: "Forklift Operator", status: "Scheduled", tag: null, tagClass: "" },
-        { date: "Sunday, March 15",    time: "07:00 – 19:00", area: "Maintenance", role: "Standby (if called in)", status: "Supervisor on duty", tag: "Be ready if called in", tagClass: "attn" },
-        { date: "Monday, March 16",    time: "19:00 – 07:00", area: "Quality · Finished Goods", role: "Quality Technician", status: "Scheduled", tag: null, tagClass: "" }
+        { date: "Wednesday, March 11", time: "19:00 – 07:00", area: "Bottling · Line 3",        role: "Packaging Operator",      status: "Not clocked in",      tag: "Night shift premium applies", tagClass: "" },
+        { date: "Friday, March 13",    time: "07:00 – 19:00", area: "Warehouse · Shipping",      role: "Forklift Operator",       status: "Scheduled",           tag: null,                          tagClass: "" },
+        { date: "Sunday, March 15",    time: "07:00 – 19:00", area: "Maintenance",               role: "Standby (if called in)",  status: "Supervisor on duty",  tag: "Be ready if called in",       tagClass: "attn" },
+        { date: "Monday, March 16",    time: "19:00 – 07:00", area: "Quality · Finished Goods",  role: "Quality Technician",      status: "Scheduled",           tag: null,                          tagClass: "" }
       ];
 
       const banner  = document.getElementById('currentShiftBanner');
       const details = document.getElementById('shiftDetails');
       const cards   = document.querySelectorAll('.shift-card');
+      const header  = document.getElementById('shiftWidgetHeader');
+      const body    = document.getElementById('widgetBody');
+      const toggle  = document.getElementById('collapseToggle');
 
+      // ── Collapse logic ──
+      let isCollapsed = false;
+
+      header.addEventListener('click', function (e) {
+        // Don't collapse if clicking a link inside header (future-proofing)
+        if (e.target.tagName === 'A') return;
+        isCollapsed = !isCollapsed;
+        body.classList.toggle('collapsed', isCollapsed);
+        toggle.classList.toggle('collapsed', isCollapsed);
+        toggle.title = isCollapsed ? 'Expand' : 'Collapse';
+      });
+
+      // Prevent button click double-firing the header click
+      toggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        isCollapsed = !isCollapsed;
+        body.classList.toggle('collapsed', isCollapsed);
+        toggle.classList.toggle('collapsed', isCollapsed);
+        toggle.title = isCollapsed ? 'Expand' : 'Collapse';
+      });
+
+      // ── Shift detail logic ──
       function showShift(index) {
         const s = shifts[index];
         cards.forEach(c => c.classList.remove('active'));
         cards[index].classList.add('active');
-        banner.textContent = `${s.date} · ${s.time}`;
-        details.innerHTML = `
-          <div class="detail-grid">
-            <span class="d-label">Area</span><span class="d-value">${s.area}</span>
-            <span class="d-label">Role</span><span class="d-value">${s.role}</span>
-            <span class="d-label">Status</span><span class="d-value">${s.status}</span>
-          </div>
-          ${s.tag ? `<div><span class="tag ${s.tagClass}">${s.tag}</span></div>` : ''}
-        `;
+        banner.textContent = s.date + ' · ' + s.time;
+        details.innerHTML =
+          '<div class="detail-grid">' +
+            '<span class="d-label">Area</span><span class="d-value">' + s.area + '</span>' +
+            '<span class="d-label">Role</span><span class="d-value">' + s.role + '</span>' +
+            '<span class="d-label">Status</span><span class="d-value">' + s.status + '</span>' +
+          '</div>' +
+          (s.tag ? '<div><span class="tag ' + s.tagClass + '">' + s.tag + '</span></div>' : '');
       }
 
-      cards.forEach(card => {
+      cards.forEach(function(card) {
         card.addEventListener('click', function () {
           showShift(parseInt(this.dataset.shift));
         });
